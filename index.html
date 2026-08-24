@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="vi" class="lang-vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Witch Launcher — Minecraft: Java Edition trên iOS</title>
+  <meta name="description" content="Witch Launcher: trình khởi chạy Minecraft: Java Edition cho iOS. Hỗ trợ mod, modpack, gamepad, render đa dạng. Giao diện WebGPU 3D trắng đen." />
+  <link rel="icon" type="image/png" href="assets/logo_dev.png" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===================== FIXED VIDEO BACKGROUND ===================== -->
+  <div class="hero-media">
+    <video id="heroVideo" class="gpu-video" autoplay muted loop playsinline preload="auto">
+      <source src="assets/hero.mp4" type="video/mp4" />
+      <source src="assets/hero.mov" type="video/quicktime" />
+    </video>
+    <div id="gpuFallback" class="gpu-fallback" style="display:none">
+      <div class="gpu-fallback-bg"></div>
+      <span id="gpuNote" class="gpu-note"></span>
+    </div>
+  </div>
+  <div class="page-scrim"></div>
+
+  <!-- ===================== NAV ===================== -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top" aria-label="Witch Launcher">
+        <img src="assets/logo_dev.png" alt="" class="brand-logo" width="36" height="36" />
+        <span class="brand-name">Witch<span class="brand-sub"> Launcher</span></span>
+      </a>
+      <button id="navToggle" class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="navLinks" class="nav-links">
+        <a href="#about"><span class="vi">Giới thiệu</span><span class="en">About</span></a>
+        <a href="#features"><span class="vi">Tính năng</span><span class="en">Features</span></a>
+        <a href="#download"><span class="vi">Tải về</span><span class="en">Download</span></a>
+        <a href="#contribute"><span class="vi">Đóng góp</span><span class="en">Contribute</span></a>
+        <a class="gh" href="https://github.com/Ynnyny/Witch_launcher" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          <span class="vi">GitHub</span><span class="en">GitHub</span>
+        </a>
+        <button id="langToggle" class="lang-btn" aria-label="Switch language">VI / EN</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="top">
+    <canvas id="gpu" class="gpu"></canvas>
+
+    <div class="hero-content" data-reveal>
+      <img src="assets/logo_dev.png" alt="Witch Launcher dev logo" class="hero-logo" width="160" height="160" />
+      <h1 class="hero-title">Witch <span class="thin">Launcher</span></h1>
+      <p class="hero-tag">
+        <span class="vi">Minecraft: Java Edition trên iOS — mở ra toàn bộ thế giới mod.</span>
+        <span class="en">Minecraft: Java Edition on iOS — unlock the full modded world.</span>
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#download">
+          <span class="vi">Tải về ngay</span><span class="en">Download now</span>
+        </a>
+        <a class="btn btn-ghost" href="#features">
+          <span class="vi">Khám phá tính năng</span><span class="en">Explore features</span>
+        </a>
+      </div>
+    </div>
+    <a class="scroll-cue" href="#about" aria-label="Scroll">
+      <span class="vi">Cuộn xuống</span><span class="en">Scroll</span>
+      <span class="arrow"></span>
+    </a>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section class="section" id="about">
+    <div class="container">
+      <p class="eyebrow" data-reveal><span class="vi">Về dự án</span><span class="en">About the project</span></p>
+      <h2 class="section-title" data-reveal>
+        <span class="vi">Một launcher Minecraft Java thuần iOS</span>
+        <span class="en">A pure-iOS Minecraft Java launcher</span>
+      </h2>
+      <p class="lead" data-reveal>
+        <span class="vi">
+          Witch Launcher (fork <strong>Angel-Aura-Amethyst</strong>) giúp bạn chạy Minecraft: Java Edition
+          nguyên bản trên iPhone và iPad — kèm theo Java runtime tích hợp (JDK 8 / 17 / 21 / 25),
+          hỗ trợ đa dạng mod loader, điều khiển cảm ứng, gamepad, chuột/bàn phím và nhiều engine render.
+          Được fork từ PojavLauncher → Amethyst-iOS, phát triển bởi <strong>DuyAnh662 (Za_d626)</strong>.
+        </span>
+        <span class="en">
+          Witch Launcher (a fork of <strong>Angel-Aura-Amethyst</strong>) runs the native Minecraft: Java Edition
+          client on iPhone and iPad — with a bundled Java runtime (JDK 8 / 17 / 21 / 25), broad mod-loader support,
+          touch controls, gamepad, mouse/keyboard and multiple rendering backends.
+          Forked from PojavLauncher → Amethyst-iOS, by <strong>DuyAnh662 (Za_d626)</strong>.
+        </span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== FEATURES ===================== -->
+  <section class="section section-alt" id="features">
+    <div class="container">
+      <p class="eyebrow" data-reveal><span class="vi">Tại sao chọn Witch</span><span class="en">Why Witch</span></p>
+      <h2 class="section-title" data-reveal>
+        <span class="vi">Tính năng nổi bật</span><span class="en">Highlights</span>
+      </h2>
+      <div class="grid">
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4v10l-8 4-8-4V7z"/><path d="M4 7l8 4 8-4M12 11v10"/></svg>
+          </div>
+          <h3><span class="vi">Chạy MC Java trên iOS</span><span class="en">MC Java on iOS</span></h3>
+          <p><span class="vi">Java runtime tích hợp sẵn, không cần máy tính. Hỗ trợ bản vanilla, snapshot và bản mod.</span><span class="en">Bundled Java runtime — no PC required. Vanilla, snapshots and modded instances.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M6 6l12 12M18 6L6 18"/></svg>
+          </div>
+          <h3><span class="vi">Mod loader đa dạng</span><span class="en">Many mod loaders</span></h3>
+          <p><span class="vi">Fabric, Forge, NeoForge, Quilt, OptiFine — tự động nhận diện theo phiên bản.</span><span class="en">Fabric, Forge, NeoForge, Quilt, OptiFine — auto-detected per version.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M8 10l3 3-3 3M13 16h4"/></svg>
+          </div>
+          <h3><span class="vi">Mod &amp; Modpack</span><span class="en">Mods &amp; Modpacks</span></h3>
+          <p><span class="vi">Duyệt Modrinth, CurseForge, nhập file <code>.mrpack</code> tự động tải nội dung.</span><span class="en">Browse Modrinth &amp; CurseForge, import <code>.mrpack</code> with auto-download.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><path d="M7 11V8a5 5 0 0 1 10 0v3"/><rect x="5" y="11" width="14" height="9" rx="2"/></svg>
+          </div>
+          <h3><span class="vi">Điều khiển linh hoạt</span><span class="en">Flexible controls</span></h3>
+          <p><span class="vi">Cảm ứng tùy biến, gamepad (MFi/PS/Xbox), chuột &amp; bàn phím, con trỏ tùy chỉnh.</span><span class="en">Custom touch, gamepad (MFi/PS/Xbox), mouse &amp; keyboard, custom cursors.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+          </div>
+          <h3><span class="vi">Nhiều engine render</span><span class="en">Render backends</span></h3>
+          <p><span class="vi">GL4ES, MetalANGLE, MobileGlues, LTW, Zink, MoltenVK (Vulkan) cho mod Vulkan.</span><span class="en">GL4ES, MetalANGLE, MobileGlues, LTW, Zink, MoltenVK (Vulkan) for Vulkan mods.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18M3 12h18"/></svg>
+          </div>
+          <h3><span class="vi">Cá nhân hóa sâu</span><span class="en">Deep theming</span></h3>
+          <p><span class="vi">Liquid Glass, blur, màu nhấn, hình nền ảnh/video, xuất/nhập giao diện.</span><span class="en">Liquid Glass, blur, accent color, image/video wallpaper, theme export/import.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+          </div>
+          <h3><span class="vi">Tài khoản</span><span class="en">Accounts</span></h3>
+          <p><span class="vi">Đăng nhập Microsoft và Ely.by, ảnh đại diện qua MCHeads.</span><span class="en">Microsoft &amp; Ely.by login, avatars via MCHeads.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+          </div>
+          <h3><span class="vi">Hiệu năng &amp; JIT</span><span class="en">Performance &amp; JIT</span></h3>
+          <p><span class="vi">Quản lý JIT, RAM tự động (60% còn lại), HUD FPS/CPU/GPU/RAM trong game.</span><span class="en">JIT handling, auto RAM (60% remaining), in-game FPS/CPU/GPU/RAM HUD.</span></p>
+        </article>
+
+        <article class="card" data-reveal>
+          <div class="card-ico">
+            <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/><path d="M12 8v4l3 2"/></svg>
+          </div>
+          <h3><span class="vi">Hỗ trợ &amp; ổn định</span><span class="en">Support &amp; stability</span></h3>
+          <p><span class="vi">Trình phân tích crash, trình duyệt file, danh sách server.</span><span class="en">Crash-log analyzer, file browser, server list.</span></p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DOWNLOAD ===================== -->
+  <section class="section" id="download">
+    <div class="container">
+      <p class="eyebrow" data-reveal><span class="vi">Bắt đầu</span><span class="en">Get started</span></p>
+      <h2 class="section-title" data-reveal>
+        <span class="vi">Tải Witch Launcher</span><span class="en">Download Witch Launcher</span>
+      </h2>
+
+      <!-- status -->
+      <div class="status-row" data-reveal>
+        <span class="status-dot"></span>
+        <span class="status-text"><span class="vi">Đang hoạt động</span><span class="en">Online</span></span>
+        <span class="status-sep">•</span>
+        <span class="status-ver" id="statusVer">v1.1.4-beta</span>
+        <span class="status-sep">•</span>
+        <span class="status-lic"><span class="vi">Giấy phép GPL</span><span class="en">GPL licensed</span></span>
+      </div>
+
+      <!-- download: tự lấy từ GitHub Releases -->
+      <div class="dl-head" data-reveal>
+        <a class="dl-quick" href="https://github.com/Ynnyny/Witch_launcher/releases" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          <span class="vi">Trang Releases</span><span class="en">Releases page</span>
+        </a>
+        <a class="dl-quick" href="https://discord.gg/qmbuRvaEq" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16v10H4z"/><path d="M8 10v4M16 10v4M11 12h2"/></svg>
+          <span class="vi">Discord</span><span class="en">Discord</span>
+        </a>
+        <a class="dl-quick" href="#contribute">
+          <svg viewBox="0 0 24 24"><path d="M12 3l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+          <span class="vi">Hướng dẫn cài</span><span class="en">Install guide</span>
+        </a>
+      </div>
+
+      <div id="releaseList" class="release-list" data-reveal>
+        <div class="release-loading"><span class="vi">Đang tải danh sách bản phát hành…</span><span class="en">Loading releases…</span></div>
+      </div>
+
+      <!-- iOS + chip support -->
+      <div class="support" data-reveal>
+        <div class="support-block">
+          <h4><span class="vi">iOS được hỗ trợ</span><span class="en">Supported iOS</span></h4>
+          <div class="chips">
+            <span class="chip">iOS 15</span><span class="chip">iOS 16</span><span class="chip">iOS 17</span><span class="chip">iOS 18</span>
+          </div>
+        </div>
+        <div class="support-block">
+          <h4><span class="vi">Dòng chip</span><span class="en">Chip lines</span></h4>
+          <div class="chips">
+            <span class="chip">A9</span><span class="chip">A10</span><span class="chip">A11</span><span class="chip">A12</span><span class="chip">A13</span><span class="chip">A14</span><span class="chip">A15</span><span class="chip">A16</span><span class="chip">A17</span><span class="chip">A18</span><span class="chip">A19</span>
+            <span class="chip">M1</span><span class="chip">M2</span><span class="chip">M3</span><span class="chip">M4</span><span class="chip">M5</span>
+          </div>
+        </div>
+        <p class="support-note" data-reveal>
+          <span class="vi">Cần bật JIT (qua TrollStore, StikDebug, SideStore…) để chạy Minecraft mượt mà.</span>
+          <span class="en">JIT must be enabled (via TrollStore, StikDebug, SideStore…) for smooth play.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTRIBUTE ===================== -->
+  <section class="section section-alt" id="contribute">
+    <div class="container contribute">
+      <div class="contribute-card" data-reveal>
+        <div class="contribute-glow"></div>
+        <h2 class="section-title light">
+          <span class="vi">Cùng xây dựng Witch</span><span class="en">Help build Witch</span>
+        </h2>
+        <p class="lead">
+          <span class="vi">
+            Witch là dự án mã nguồn mở (fork từ cộng đồng). Bạn có thể đóng góp mã nguồn, dịch thuật,
+            báo lỗi, thiết kế, hoặc đơn giản là chia sẻ để dự án đến được nhiều người hơn.
+          </span>
+          <span class="en">
+            Witch is an open-source project (community fork). Contribute code, translations, bug reports,
+            design, or simply share it so more people can discover it.
+          </span>
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="https://github.com/Ynnyny/Witch_launcher" target="_blank" rel="noopener">
+            <span class="vi">Đóng góp trên GitHub</span><span class="en">Contribute on GitHub</span>
+          </a>
+          <a class="btn btn-ghost" href="https://discord.gg/qmbuRvaEq" target="_blank" rel="noopener">
+            <span class="vi">Tham gia Discord</span><span class="en">Join Discord</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo_dev.png" alt="" width="28" height="28" />
+        <span>Witch Launcher</span>
+      </div>
+      <p class="footer-credit">
+        <span class="vi">Fork của <strong>Angel-Aura-Amethyst</strong> bởi DuyAnh662 (Za_d626). Kế thừa PojavLauncher → Amethyst-iOS → Amethyst25(CatsruleDogs).</span>
+        <span class="en">Fork of <strong>Angel-Aura-Amethyst</strong> by DuyAnh662 (Za_d626). Based on PojavLauncher → Amethyst-iOS → Amethyst25(CatsruleDogs).</span>
+      </p>
+      <p class="footer-lic">
+        <span class="vi">Phần mềm theo giấy phép GPL. Sự thật là, video nền thực ra được quay bằng iPhone 14 Plus của WLong!</span>
+        <span class="en">Software under GPL. The truth is, the background video was actually shot using WLong's iPhone 14 Plus!</span>
+      </p>
+      <p class="footer-copy">© <span id="year">2026</span> Witch Launcher.</p>d
+    </div>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
