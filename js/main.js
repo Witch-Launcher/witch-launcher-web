@@ -132,6 +132,7 @@ const RELEASES_API = 'https://api.github.com/repos/Witch-Launcher/Witch_launcher
 const CACHE_KEY = 'witch_releases_cache_v1';
 const CACHE_TTL = 10 * 60 * 1000; // 10 phút
 let allReleases = [];
+let currentTab = 'release';
 
 function readCache(allowStale) {
   try {
@@ -146,15 +147,25 @@ function readCache(allowStale) {
 function writeCache(data) {
   try { localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), data })); } catch (e) {}
 }
+function currentList() {
+  const wantPre = currentTab === 'prerelease';
+  return allReleases.filter(r => !!r.prerelease === wantPre);
+}
 function renderTable(stale) {
+  const list = currentList();
   let html = '<div class="rel-table">';
-  allReleases.forEach((r, i) => {
+  if (!list.length) {
+    const label = currentTab === 'prerelease' ? 'Pre-release' : 'Release';
+    html += '<div class="asset-none">' + bi('Chưa có bản ' + label + ' nào.', 'No ' + label + ' available yet.') + '</div>';
+  }
+  list.forEach((r, idx) => {
+    const i = allReleases.indexOf(r);
     const date = r.published_at ? new Date(r.published_at).toLocaleDateString() : '';
     const pre = !!r.prerelease;
     const badge = pre
       ? '<span class="rel-badge pre">' + bi('Pre-release', 'Pre-release') + '</span>'
       : '<span class="rel-badge rel">' + bi('Release', 'Release') + '</span>';
-    const latest = i === 0 ? '<span class="rel-badge latest">' + bi('Mới nhất', 'Latest') + '</span>' : '';
+    const latest = (idx === 0) ? '<span class="rel-badge latest">' + bi('Mới nhất', 'Latest') + '</span>' : '';
     html += '<div class="rel-row-wrap">'
       + '<button class="rel-row" type="button" data-i="' + i + '" aria-expanded="false">'
         + '<span class="rel-ver">' + escapeHtml(r.tag_name || '') + '</span>'
@@ -168,6 +179,8 @@ function renderTable(stale) {
   html += '</div>';
   if (stale) html += '<div class="rel-stale">' + bi('Đang hiển thị bản cache (chưa thể làm mới lúc này).', 'Showing cached data (could not refresh now).') + '</div>';
   document.getElementById('releaseList').innerHTML = html;
+  const ver = document.getElementById('statusVer');
+  if (ver && list[0]) ver.textContent = list[0].tag_name || ver.textContent;
 }
 async function loadReleases() {
   const list = document.getElementById('releaseList');
@@ -176,7 +189,6 @@ async function loadReleases() {
   const cached = readCache(false);
   if (cached) {
     allReleases = cached;
-    if (ver && allReleases[0]) ver.textContent = allReleases[0].tag_name || ver.textContent;
     renderTable(false);
     return;
   }
@@ -188,13 +200,11 @@ async function loadReleases() {
     if (!real.length) throw new Error('empty');
     writeCache(real);
     allReleases = real;
-    if (ver && real[0].tag_name) ver.textContent = real[0].tag_name;
     renderTable(false);
   } catch (e) {
     const stale = readCache(true); // dùng cache cũ dù hết hạn
     if (stale && stale.length) {
       allReleases = stale;
-      if (ver && allReleases[0]) ver.textContent = allReleases[0].tag_name || ver.textContent;
       renderTable(true);
       return;
     }
@@ -223,5 +233,19 @@ document.getElementById('releaseList').addEventListener('click', (ev) => {
     }
     body.hidden = false;
   }
+});
+
+// Tab switching: Release vs Pre-release
+document.querySelectorAll('.rel-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (currentTab === btn.dataset.tab) return;
+    currentTab = btn.dataset.tab;
+    document.querySelectorAll('.rel-tab').forEach(b => {
+      const on = b === btn;
+      b.classList.toggle('is-active', on);
+      b.setAttribute('aria-selected', String(on));
+    });
+    renderTable(false);
+  });
 });
 loadReleases();
