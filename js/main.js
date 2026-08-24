@@ -128,7 +128,7 @@ function renderAssets(r) {
   return '<div class="asset-list">' + assets + '</div>';
 }
 
-const RELEASES_API = 'https://api.github.com/repos/Ynnyny/Witch_launcher/releases?per_page=30';
+const RELEASES_API = 'https://api.github.com/repos/Witch-Launcher/Witch_launcher/releases?per_page=30';
 const CACHE_KEY = 'witch_releases_cache_v1';
 const CACHE_TTL = 10 * 60 * 1000; // 10 phút
 let allReleases = [];
@@ -200,7 +200,7 @@ async function loadReleases() {
     }
     list.innerHTML = '<div class="release-fallback">'
       + '<p>' + bi('Không thể tải từ GitHub.', 'Could not load from GitHub.') + '</p>'
-      + '<a class="btn btn-primary" href="https://github.com/Ynnyny/Witch_launcher/releases" target="_blank" rel="noopener">'
+      + '<a class="btn btn-primary" href="https://github.com/Witch-Launcher/Witch_launcher/releases" target="_blank" rel="noopener">'
       + bi('Mở trang Releases', 'Open Releases page') + '</a></div>';
   }
 }
