@@ -1,8 +1,5 @@
 # Witch Launcher — Trang giới thiệu (WebGPU / B&W)
 
-Trang landing đơn trang, chủ đề **trắng đen**, dùng **WebGPU** để render hiệu ứng 3D
-(tinh thể đơn sắc raymarching + nền fbm), nội dung **song ngữ Việt / Anh**.
-
 ## Chạy trên máy tính
 
 WebGPU yêu cầu "secure context" (localhost hoặc https). Mở terminal trong thư mục `web/`:
