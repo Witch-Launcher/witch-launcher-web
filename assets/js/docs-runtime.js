@@ -21,19 +21,23 @@
         groupAlias: g => ({ Overview: "OVERVIEW", Plugins: "PLUGIN", Reference: "REFERENCE" }[g] || String(g).toUpperCase()) };
   let VI = document.documentElement.lang === "vi";
   let T = mkT(VI);
-  const atVIDir = location.pathname.indexOf("/vi/docs/") !== -1;
+  /* site root path ("/" in production, handles subpath deploys too) — derived from
+     this script's own URL so in-place language switches can build correct absolute
+     URLs instead of accumulating "../vi/" prefixes on repeated replaceState calls */
+  const scriptEl = document.currentScript || Array.from(document.scripts).find(s => /docs-runtime\.js($|\?)/.test(s.src || ""));
+  const siteRoot = scriptEl ? new URL("../../", scriptEl.src).pathname : "/";
 
   const PAGES = ["getting-started", "jit", "runtimes", "plugins", "plugins-dev", "changelog", "faq", "credits"];
   const ALL = ["index", ...PAGES];
   const NAV = { "getting-started": "START", jit: "JIT", runtimes: "RUNTIMES", plugins: "PLUGINS", "plugins-dev": "PDEV", changelog: "LOG", faq: "FAQ", credits: "CREDITS" };
-  const mdBase = () => (atVIDir ? "../../docs-md/" : "../docs-md/") + (VI ? "vi/" : "en/");
+  const mdBase = (vi) => siteRoot + "docs-md/" + (vi ? "vi/" : "en/");
 
   /* ————————————— data ————————————— */
   const pages = new Map();      /* id -> { meta, body } */
   const loadAll = async () => {
     await Promise.all(ALL.map(async id => {
       try {
-        const r = await fetch(mdBase() + id + ".md");
+        const r = await fetch(mdBase(VI) + id + ".md");
         if (!r.ok) throw new Error("HTTP " + r.status);
         pages.set(id, parseFront(await r.text()));
       } catch (e) { /* page stays absent — render falls back to index */ }
@@ -209,6 +213,14 @@
     else smoothTop();
   };
 
+  /* sidebar toggle — drawer on <1024, collapse/expand rail on ≥1024 (desktop + landscape tablets) */
+  const mqWide = matchMedia("(min-width: 1024px)");
+  $(".sb-toggle")?.addEventListener("click", () => {
+    const d = document.documentElement;
+    if (mqWide.matches) d.classList.toggle("sb-collapsed");
+    else d.classList.toggle("sb-open");
+  });
+
   /* ————————————— boot ————————————— */
   let currentKey = "";
   const onHashChange = () => {
@@ -265,7 +277,7 @@
   });
 
   /* ————————————— language switch — in-place, no page reload ————————————— */
-  const shellUrl = (vi) => { if (vi) return atVIDir ? "index.html" : "../vi/docs/index.html"; return atVIDir ? "../../docs/index.html" : "index.html"; };
+  const shellPath = (vi) => siteRoot + (vi ? "vi/docs/index.html" : "docs/index.html");
   const syncSiteLabels = () => {
     $$(".js-site-label").forEach(a => { a.textContent = VI ? a.dataset.vi : a.dataset.en; });
     const meta = $("#js-meta-desc");
@@ -274,7 +286,7 @@
   };
   const patchLangLinks = () => {
     const r = route().page, anchor = route().anchor;
-    const base = shellUrl(!VI); /* the OTHER language's shell */
+    const base = shellPath(!VI); /* the OTHER language's shell */
     const cue = "#/" + r + (anchor ? "#" + anchor : "");
     $$(".js-langlink").forEach(a => a.setAttribute("href", `${base}${cue}`));
   };
@@ -288,7 +300,7 @@
     buildRailNav();
     syncSiteLabels();
     const { page, anchor } = route();
-    history.replaceState(null, "", shellUrl(VI) + `#/${page}${anchor ? "#" + anchor : ""}`);
+    history.replaceState(null, "", shellPath(VI) + `#/${page}${anchor ? "#" + anchor : ""}`);
     currentKey = "";             /* force a full re-render in the new language */
     renderCurrent();
     patchLangLinks();

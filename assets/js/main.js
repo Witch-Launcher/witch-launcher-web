@@ -34,15 +34,21 @@
       root.classList.add("wipe-snap");       /* freeze every color transition */
       apply();                               /* the flip now lands atomically */
     });
+    /* wipe-snap must outlive the pseudo tree: dropping it while the
+       ::view-transition-old/new(root) elements are still mounted lets the
+       default vtIn/vtOut animations restart on top of the circle reveal —
+       that was the "flash of the new theme, snap back, then wipe" glitch.
+       Gate the release on t.finished plus two frames so the tree is gone first. */
+    const cleanup = () => requestAnimationFrame(() => requestAnimationFrame(releaseWipe));
     t.ready.then(() => {
       root.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-        { duration: dur, easing: "cubic-bezier(.19,1,.22,1)", pseudoElement: "::view-transition-new(root)" }
+        { duration: dur, easing: "cubic-bezier(.19,1,.22,1)", pseudoElement: "::view-transition-new(root)", fill: "both" }
       );
     }).catch(releaseWipe);
-    if (t.finished && t.finished.then) t.finished.then(releaseWipe, releaseWipe);
-    else setTimeout(releaseWipe, dur + 400);
-    setTimeout(releaseWipe, dur + 700);       /* hard safety net */
+    if (t.finished && t.finished.then) t.finished.then(cleanup, cleanup);
+    else setTimeout(cleanup, dur + 400);
+    setTimeout(releaseWipe, dur + 900);      /* hard safety net */
   }
   $$(".theme-toggle").forEach(btn => btn.addEventListener("click", () => {
     circleWipe(btn, () => setTheme(root.dataset.theme === "dark" ? "light" : "dark"));
@@ -126,23 +132,44 @@
   /* ————————————— landing: in-place language morph ————————————— */
   /* Both landing pages are structurally identical; we sync every text node and
      local attribute between them so listeners survive the swap. Assets stay on
-     the same absolute URLs so nothing re-downloads. */
-  const syncTrees = (cur, next) => {
-    const walk = (a, b) => {
-      if (!a || !b) return;
-      if (a.nodeType === 3 && b.nodeType === 3) {
-        const t = a.nodeValue.trim();
-        if (t && b.nodeValue.trim() && a.nodeValue !== b.nodeValue) a.nodeValue = b.nodeValue;
-        return;
+     the same absolute URLs so nothing re-downloads.
+     Pairing is by signature (tag + id + classes) with an ordered search, not by
+     raw index — at runtime some nodes vanish (the loader removes itself, #dl-root
+     is re-rendered with live release data) so index pairing silently no-ops. */
+  const significant = list => [...list].filter(n =>
+    n.nodeType === 1 || (n.nodeType === 3 && n.nodeValue.trim()));   /* skip comments + whitespace text */
+  const sigOf = n => n.nodeType === 3 ? "#text"
+    : n.nodeType === 1 ? n.tagName + "|" + (n.id || "") + "|" +
+        String(n.getAttribute("class") || "").replace(/\s+/g, " ").trim()
+    : "#" + n.nodeType;
+  const syncNode = (a, b) => {
+    if (a.nodeType === 3 && b.nodeType === 3) {
+      if (a.nodeValue !== b.nodeValue && b.nodeValue.trim()) a.nodeValue = b.nodeValue;
+      return;
+    }
+    if (a.nodeType !== 1 || b.nodeType !== 1 || a.tagName !== b.tagName) return;
+    for (const n of ["href", "src", "alt", "title", "aria-label", "placeholder", "hreflang", "lang"]) {
+      if (b.hasAttribute(n) && a.getAttribute(n) !== b.getAttribute(n)) a.setAttribute(n, b.getAttribute(n));
+    }
+    const A = significant(a.childNodes), B = significant(b.childNodes);
+    const used = new Set();
+    let cursor = 0;
+    for (const an of A) {
+      const s = sigOf(an);
+      let k = -1;
+      for (let j = cursor; j < B.length; j++) {
+        if (used.has(j)) continue;
+        if (sigOf(B[j]) === s) { k = j; break; }
       }
-      if (a.nodeType !== 1 || b.nodeType !== 1 || a.tagName !== b.tagName) return;
-      for (const n of ["href", "src", "alt", "title", "aria-label", "placeholder"]) {
-        if (b.hasAttribute(n) && a.getAttribute(n) !== b.getAttribute(n)) a.setAttribute(n, b.getAttribute(n));
-      }
-      const A = a.childNodes, B = b.childNodes, n = Math.min(A.length, B.length);
-      for (let i = 0; i < n; i++) walk(A[i], B[i]);
-    };
-    walk(cur, next);
+      if (k === -1) continue;                     /* no counterpart in the parsed page — keep current node */
+      used.add(k);
+      cursor = k + 1;
+      syncNode(an, B[k]);
+    }
+  };
+  const syncTrees = (cur, next) => syncNode(cur, next);
+  const stripVolatile = doc => {
+    doc.querySelectorAll(".witch-loader, script, noscript, [data-loader]").forEach(n => n.remove());
   };
   $$(".js-langlink").forEach(a => a.addEventListener("click", async e => {
     if (document.getElementById("doc-article")) return;      /* docs runtime owns its switcher */
@@ -154,6 +181,7 @@
       const r = await fetch(url, { credentials: "same-origin" });
       if (!r.ok) throw new Error("http " + r.status);
       dest = new DOMParser().parseFromString(await r.text(), "text/html");
+      stripVolatile(dest);
       if (!dest.getElementById("main")) throw new Error("not a landing page");
     } catch { location.href = url; return; }
     const apply = () => {
@@ -371,30 +399,6 @@
     requestAnimationFrame(tick);
   } else {
     ready();
-  }
-
-  /* ————————————— docs: sidebar + toc ————————————— */
-  $(".sb-toggle")?.addEventListener("click", () => root.classList.toggle("sb-open"));
-  $$(".docnav a").forEach(a => a.addEventListener("click", () => root.classList.remove("sb-open")));
-  const tocBox = $(".toc");
-  if (tocBox) {
-    const heads = $$(".prose h2[id]");
-    if (heads.length) {
-      tocBox.innerHTML = '<span class="mono-sm">On this page</span>' + heads.map(h =>
-        `<a href="#${h.id}" data-toc="${h.id}">${h.textContent}</a>`).join("");
-      const toIO = new IntersectionObserver(en => {
-        for (const e of en) if (e.isIntersecting) {
-          $$("a", tocBox).forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id));
-        }
-      }, { rootMargin: "-15% 0px -70% 0px" });
-      heads.forEach(h => toIO.observe(h));
-      $$("a", tocBox).forEach(a => a.addEventListener("click", e => {
-        const t = document.getElementById(a.dataset.toc);
-        if (!t) return;
-        e.preventDefault(); smoothTo(t);
-        history.replaceState(null, "", "#" + a.dataset.toc);
-      }));
-    } else tocBox.remove();
   }
 
   /* ————————————— GitHub releases + stars (live, cached fallback) ————————————— */

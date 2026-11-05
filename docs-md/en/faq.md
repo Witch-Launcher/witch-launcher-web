@@ -40,6 +40,18 @@ Frame Generation interpolates or extrapolates frames (Motion-Adaptive GPU and Ca
 
 > [!TIP] If the device gets warm, combine Frame Generation with resolution scaling or FSR 1.0 in Settings → Renderer & Display instead of raising the base framerate.
 
+### The launcher says there is not enough RAM. What now?
+
+Witch cannot conjure memory — iOS caps how much RAM a sideloaded app may use, and Minecraft hits that cap easily with big modpacks. When the launcher reports that it is out of memory (or the game dies while loading), install [**GetMoreRam**](https://github.com/hugeBlack/GetMoreRam) — it signs your sideloaded copy with the *Increased Memory Limit* entitlement so iOS lets it use more RAM:
+
+1. Sideload **GetMoreRam** onto the device.
+2. Open it → **Settings** → sign in with the same account you used to sign Witch.
+3. Go to **App IDs** → **Refresh** → tap **Witch** → **Add Increased Memory Limit**.
+4. Reinstall Witch from SideStore / AltStore.
+5. Relaunch — check whether Minecraft now starts and stays up.
+
+It does not add physical RAM; it removes the per-app cap, which is the usual reason the same world launches on one device and gets killed on another. This is unrelated to the JVM memory allocation in Witch's own settings — raising `-Xmx` will not help if iOS kills the process first.
+
 ## Content & accounts {#content}
 ### Why are my mods not loading?
 Check the four things content usually demands:

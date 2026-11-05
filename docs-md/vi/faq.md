@@ -47,6 +47,18 @@ Frame Generation nội suy hoặc ngoại suy khung hình (hai chế độ Motio
 
 > [!TIP] Nếu thiết bị ấm lên, kết hợp Frame Generation với co giãn độ phân giải hoặc FSR 1.0 trong Cài đặt → Renderer & Display thay vì nâng tần số nền.
 
+### Launcher báo thiếu RAM. Giờ làm sao?
+
+Witch không thể tự biến ra bộ nhớ — iOS giới hạn dung lượng RAM mà một app sideloaded được phép dùng, và Minecraft chạm trần đó rất dễ với các modpack lớn. Khi launcher báo thiếu bộ nhớ (hoặc game chết ngay khi đang nạp), hãy cài [**GetMoreRam**](https://github.com/hugeBlack/GetMoreRam) — nó ký lại bản sideloaded của bạn với entitlement *Increased Memory Limit* để iOS cho app dùng nhiều RAM hơn:
+
+1. Sideload **GetMoreRam** vào thiết bị.
+2. Mở app → **Settings** → đăng nhập bằng chính tài khoản bạn dùng để ký Witch.
+3. Vào **App IDs** → **Refresh** → chọn **Witch** → **Add Increased Memory Limit**.
+4. Cài lại Witch từ SideStore / AltStore.
+5. Mở lại — kiểm tra xem Minecraft giờ có khởi động và chạy ổn định không.
+
+Nó không thêm RAM vật lý; nó gỡ trần giới hạn của từng app — vốn là lý do cùng một thế giới mở được trên máy này nhưng bị kill trên máy kia. Việc này không liên quan đến phần cấp phát bộ nhớ JVM trong cài đặt của Witch — nâng `-Xmx` không giúp gì nếu iOS kill tiến trình trước.
+
 ## Nội dung & tài khoản {#content}
 
 ### Vì sao mod của tôi không nạp?
