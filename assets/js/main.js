@@ -20,11 +20,16 @@
     const dark = root.dataset.theme === "dark";
     $$(".theme-toggle").forEach(b => b.setAttribute("aria-pressed", String(dark)));
   }
+  let wipeInflight = false;
+  const releaseWipe = () => { wipeInflight = false; root.classList.remove("wipe-snap"); };
   function circleWipe(el, apply) {
     if (!document.startViewTransition || reduced) { apply(); return; }
+    if (wipeInflight) return;                /* ignore rapid re-entry — it rejects ready and flashes */
+    wipeInflight = true;
     const r = el.getBoundingClientRect();
     const x = r.left + r.width / 2, y = r.top + r.height / 2;
     const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const dur = Math.min(2300, Math.max(850, Math.round(radius * 0.95))); /* constant speed: landscape slower, portrait faster */
     const t = document.startViewTransition(() => {
       root.classList.add("wipe-snap");       /* freeze every color transition */
       apply();                               /* the flip now lands atomically */
@@ -32,12 +37,12 @@
     t.ready.then(() => {
       root.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
-        { duration: 1240, easing: "cubic-bezier(.19,1,.22,1)", pseudoElement: "::view-transition-new(root)" }
+        { duration: dur, easing: "cubic-bezier(.19,1,.22,1)", pseudoElement: "::view-transition-new(root)" }
       );
-    });
-    const done = () => requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove("wipe-snap")));
-    if (t.finished && t.finished.then) t.finished.then(done, done);
-    else setTimeout(done, 850);
+    }).catch(releaseWipe);
+    if (t.finished && t.finished.then) t.finished.then(releaseWipe, releaseWipe);
+    else setTimeout(releaseWipe, dur + 400);
+    setTimeout(releaseWipe, dur + 700);       /* hard safety net */
   }
   $$(".theme-toggle").forEach(btn => btn.addEventListener("click", () => {
     circleWipe(btn, () => setTheme(root.dataset.theme === "dark" ? "light" : "dark"));
@@ -117,6 +122,52 @@
     if (setScrollTarget) setScrollTarget(y);
     else t.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
   };
+
+  /* ————————————— landing: in-place language morph ————————————— */
+  /* Both landing pages are structurally identical; we sync every text node and
+     local attribute between them so listeners survive the swap. Assets stay on
+     the same absolute URLs so nothing re-downloads. */
+  const syncTrees = (cur, next) => {
+    const walk = (a, b) => {
+      if (!a || !b) return;
+      if (a.nodeType === 3 && b.nodeType === 3) {
+        const t = a.nodeValue.trim();
+        if (t && b.nodeValue.trim() && a.nodeValue !== b.nodeValue) a.nodeValue = b.nodeValue;
+        return;
+      }
+      if (a.nodeType !== 1 || b.nodeType !== 1 || a.tagName !== b.tagName) return;
+      for (const n of ["href", "src", "alt", "title", "aria-label", "placeholder"]) {
+        if (b.hasAttribute(n) && a.getAttribute(n) !== b.getAttribute(n)) a.setAttribute(n, b.getAttribute(n));
+      }
+      const A = a.childNodes, B = b.childNodes, n = Math.min(A.length, B.length);
+      for (let i = 0; i < n; i++) walk(A[i], B[i]);
+    };
+    walk(cur, next);
+  };
+  $$(".js-langlink").forEach(a => a.addEventListener("click", async e => {
+    if (document.getElementById("doc-article")) return;      /* docs runtime owns its switcher */
+    e.preventDefault();
+    const url = a.getAttribute("href");
+    if (!url) return;
+    let dest = null;
+    try {
+      const r = await fetch(url, { credentials: "same-origin" });
+      if (!r.ok) throw new Error("http " + r.status);
+      dest = new DOMParser().parseFromString(await r.text(), "text/html");
+      if (!dest.getElementById("main")) throw new Error("not a landing page");
+    } catch { location.href = url; return; }
+    const apply = () => {
+      document.documentElement.lang = dest.documentElement.lang;
+      const mt = dest.querySelector("title"); if (mt) document.title = mt.textContent;
+      const md = dest.querySelector('meta[name="description"]');
+      const mc = document.querySelector('meta[name="description"]');
+      if (md && mc) mc.setAttribute("content", md.getAttribute("content") || "");
+      syncTrees(document.body, dest.body);
+      history.replaceState(null, "", url);
+    };
+    if (!document.startViewTransition || reduced) { apply(); return; }
+    circleWipe(a, apply);                                       /* same circular reveal language as the theme wipe */
+  }));
 
   /* ————————————— hide-on-scroll bars + rail progress ————————————— */
   let lastY = scrollY, ticking = false;

@@ -131,7 +131,6 @@
   const crumbEl = $(".docsbar .path b");
   const tocBox = $(".toc", article.closest(".article"));
   const pagerBox = $(".doc-pager", article);
-  const sectionBar = $("#section-bar");
   let tocIO = null;
 
   const route = () => {
@@ -183,30 +182,19 @@
     assignHeadingIds(prose);
     rewriteLegacyLinks(prose);
 
-    /* section bar + right rail TOC from the rendered h2[id] */
+    /* right rail TOC — "On this page" (scroll-spy) */
     const heads = $$("h2[id]", prose);
     tocIO?.disconnect(); tocIO = null;
-    const spy = new IntersectionObserver(en => {
-      for (const e of en) if (e.isIntersecting) {
-        $$("[data-toc]", sectionBar).forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id));
-        if (tocBox) $$("a", tocBox).forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id));
-      }
-    }, { rootMargin: "-12% 0px -68% 0px" });
-    if (sectionBar) {
-      if (heads.length) {
-        sectionBar.innerHTML = heads.map((h, i) =>
-          `<a class="sb-chip" href="#/${id}#${h.id}" data-toc="${h.id}"><span class="idx">${String(i + 1).padStart(2, "0")}</span>${h.textContent}</a>`).join("");
-        sectionBar.style.display = "";
-      } else { sectionBar.innerHTML = ""; sectionBar.style.display = "none"; }
-    }
     if (tocBox) {
       if (heads.length) {
         tocBox.innerHTML = `<span class="mono-sm">${T.toc}</span>` + heads.map(h => `<a href="#/${id}#${h.id}" data-toc="${h.id}">${h.textContent}</a>`).join("");
         tocBox.style.display = "";
+        tocIO = new IntersectionObserver(en => {
+          for (const e of en) if (e.isIntersecting) $$("a", tocBox).forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id));
+        }, { rootMargin: "-12% 0px -68% 0px" });
+        heads.forEach(h => tocIO.observe(h));
       } else { tocBox.innerHTML = ""; tocBox.style.display = "none"; }
     }
-    heads.forEach(h => spy.observe(h));
-    tocIO = spy;
 
     /* prev / next pager */
     const cur = PAGES.indexOf(id);
@@ -278,12 +266,6 @@
 
   /* ————————————— language switch — in-place, no page reload ————————————— */
   const shellUrl = (vi) => { if (vi) return atVIDir ? "index.html" : "../vi/docs/index.html"; return atVIDir ? "../../docs/index.html" : "index.html"; };
-  const flash = (() => {
-    const el = document.createElement("div");
-    el.className = "lang-flash";
-    document.body.appendChild(el);
-    return el;
-  })();
   const syncSiteLabels = () => {
     $$(".js-site-label").forEach(a => { a.textContent = VI ? a.dataset.vi : a.dataset.en; });
     const meta = $("#js-meta-desc");
@@ -301,7 +283,6 @@
     VI = toVi;
     T = mkT(VI);
     document.documentElement.lang = VI ? "vi" : "en";
-    flash.classList.add("on");
     await loadAll();             /* refetch the whole set in the target language */
     buildSidebar();
     buildRailNav();
@@ -311,7 +292,6 @@
     currentKey = "";             /* force a full re-render in the new language */
     renderCurrent();
     patchLangLinks();
-    setTimeout(() => flash.classList.remove("on"), 320);
   };
   document.addEventListener("click", e => {
     const a = e.target.closest(".js-langlink"); if (!a) return;

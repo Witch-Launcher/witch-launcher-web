@@ -58,9 +58,9 @@ Everything else is derived at runtime — no index files:
   from the rendered headings and each md's `title`/`desc`.
 - **Routing** — `#/jit`, `#/jit#built-in-jit`. `hashchange` swaps the article in
   place (chrome persists, no reload, no loader replay). `[` / `]` switch pages.
-- **In-page section bar** — a sticky horizontal bar of numbered chips
-  (`01 Requirements…`) sits under the docs bar; every chip glides to its
-  section and the active section is highlighted by the scroll-spy.
+- **"On this page"** — a scroll-spy TOC of the current page's headings lives on
+  the right rail on desktop and as a bordered card on top of the article on
+  mobile, exactly like doc-site conventions.
 - **Legacy rule** — heading `{#custom-id}` pins a heading's id so deep links
   survive renames; without it a slug is derived from the heading text.
 - **Callouts** — `> [!NOTE] …` in Markdown renders as a `.callout` block.
@@ -68,13 +68,18 @@ Everything else is derived at runtime — no index files:
 
 ## Notes
 
-- **Theme toggle** — the dark/light switch runs a slow circular wipe (~1.25s)
-  from the button via the View Transitions API with every color transition
-  frozen for the duration (`html.wipe-snap`) — the flip is atomic.
-- **Language switching** — pages cross-fade with a branded page-to-page curtain
-  (cross-document View Transitions). The docs switch swaps **all Markdown in
-  place** via the runtime (no reload at all) and pulses a fade overlay;
-  the active shell's URL is updated with `replaceState`.
+- **Theme toggle** — the dark/light switch runs a circular wipe at constant
+  stroke speed (duration scales with the radius — landscapes are slower,
+  portraits faster) from the button via the View Transitions API with every
+  color transition frozen for the duration (`html.wipe-snap`) — the flip is
+  atomic.
+- **Language switching** — both landing pages and the docs flip in place,
+  without reloads. Landing: text nodes/attributes are morphed into the other
+  language inside a circular reveal driven by the View Transitions API (the
+  same reveal language as the theme wipe). Docs: every Markdown file is
+  re-fetched and re-rendered in place by the runtime, and the shell URL is
+  updated with `replaceState`. Local asset URLs are root-absolute so nothing
+  re-downloads.
 - **Witch loader** — every page opens with the official diamond mark drawing
   itself as a stroke, progress driven by the page's actual eager assets
   (preloaded hero image + eager `<img>` elements). When full, the mark fills,

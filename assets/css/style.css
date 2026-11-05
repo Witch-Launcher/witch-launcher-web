@@ -624,9 +624,18 @@
   .doc-card h3 { font-size: 21px; letter-spacing: -.02em; }
   .doc-card p { color: var(--dim); font-size: 14.5px; }
 
-  @media (max-width: 1023px), (max-width: 1279px) and (min-width: 1024px) {
+  /* TOC always visible — like "On this page" */
+  .toc {
+    position: sticky; top: 96px; align-self: start; font-size: 13px;
+    max-height: calc(100vh - 96px); overflow-y: auto; scrollbar-width: thin;
+  }
+  @media (max-width: 1023px) {
     .article { grid-template-columns: minmax(0, 1fr); }
-    .toc { display: none; }
+    .toc {
+      position: static; order: -1; max-height: none; overflow: visible;
+      margin-bottom: 34px; padding: 18px 20px;
+      border: 1px solid var(--line); background: var(--bg-raise);
+    }
   }
   @media (max-width: 1023px) {
     .docsbar { left: 0; }
@@ -635,34 +644,6 @@
     .article { padding-top: 96px; }
     .doc-pager { grid-template-columns: 1fr; }
   }
-  /* language switch flash (docs SPA) */
-  .lang-flash { position: fixed; inset: 0; z-index: 2147483300; pointer-events: none; background: var(--bg); opacity: 0; transition: opacity .17s var(--e-io); }
-  .lang-flash.on { opacity: .9; }
-
-  /* ————— in-page section bar (docs) ————— */
-  .sectionbar {
-    grid-column: 1 / -1; position: sticky; top: 58px; z-index: 18;
-    display: flex; gap: 10px; align-items: center; overflow-x: auto; scrollbar-width: none;
-    -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain;
-    margin: -30px calc(-1 * var(--gutter)) 26px; padding: 12px var(--gutter);
-    background: color-mix(in srgb, var(--bg) 84%, transparent);
-    -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--line);
-  }
-  .sectionbar::-webkit-scrollbar { display: none; }
-  .sectionbar:empty { display: none; }
-  .sb-chip {
-    display: inline-flex; gap: 9px; align-items: baseline; flex: none;
-    padding: 9px 15px; border: 1px solid var(--line); border-radius: 999px;
-    font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
-    color: var(--dim); white-space: nowrap; text-decoration: none;
-    transition: color .3s var(--e-io), border-color .3s var(--e-io), background-color .35s var(--e-io);
-  }
-  .sb-chip .idx { font-size: 8px; color: var(--faint); }
-  .sb-chip:hover { color: var(--fg); border-color: var(--line-strong); }
-  .sb-chip.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-  .sb-chip.on .idx { color: color-mix(in srgb, var(--bg) 62%, transparent); }
-
   /* ————— docs runtime: skeleton + page-in choreography ————— */
   .prose-skel { display: grid; gap: 18px; padding-block: 12px; }
   .prose-skel span { display: block; height: 15px; width: var(--w, 80%); border-radius: 8px; background: var(--line); position: relative; overflow: hidden; }

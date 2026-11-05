@@ -6,7 +6,7 @@
 <title>Witch Launcher — Minecraft: Java Edition on iPhone & iPad</title>
 <meta name="description" content="Witch Launcher brings Minecraft: Java Edition to iPhone and iPad — mods, shaders, six renderers and Java runtimes in a touch-first launcher built on Metal.">
 <meta name="color-scheme" content="dark light">
-<link rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
+<link rel="icon" type="image/svg+xml" href="/assets/brand/favicon.svg">
 <meta property="og:title" content="Witch Launcher — Minecraft: Java Edition on iPhone & iPad">
 <meta property="og:description" content="Mods, shaders, six renderers and Java runtimes in a touch-first iOS launcher built on Metal.">
 <meta property="og:type" content="website">
@@ -14,8 +14,8 @@
 <script>
 (function(){try{var t=localStorage.getItem("witch-theme");if(!t)t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t;}catch(e){}})();
 </script>
-<link rel="stylesheet" href="assets/css/style.css">
-<link rel="preload" as="image" fetchpriority="high" href="assets/img/hero/ipad.png">
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="preload" as="image" fetchpriority="high" href="/assets/img/hero/ipad.png">
 <noscript><style>.witch-loader{display:none!important}</style></noscript>
 </head>
 <body>
@@ -34,13 +34,13 @@
 
 <!-- mobile bar -->
 <header class="mobilebar" aria-hidden="false">
-  <a href="index.html"><svg width="22" height="22" viewBox="0 0 618 955" aria-hidden="true"><path fill="currentColor" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/></svg></a>
+  <a href="/index.html"><svg width="22" height="22" viewBox="0 0 618 955" aria-hidden="true"><path fill="currentColor" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/></svg></a>
   <span class="mono-sm" style="color:var(--faint)">WITCH LAUNCHER</span>
   <div style="display:flex;gap:4px;align-items:center">
     <button class="theme-toggle icon-btn" aria-label="Toggle dark / light theme" aria-pressed="true">
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor" stroke="none"/></svg>
     </button>
-    <a class="icon-btn mono-sm" href="vi/" lang="vi" hreflang="vi" style="font-size:10px">VI</a>
+    <a class="icon-btn mono-sm js-langlink" href="/vi/" lang="vi" hreflang="vi" style="font-size:10px" aria-label="Tiếng Việt">VI</a>
     <button class="menu-toggle icon-btn" aria-expanded="false" aria-label="Open menu">
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
     </button>
@@ -54,13 +54,13 @@
   <a href="#tour" style="--i:2"><span>Tour</span><small>03</small></a>
   <a href="#install" style="--i:3"><span>Install</span><small>04</small></a>
   <a href="#download" style="--i:4"><span>Download</span><small>05</small></a>
-  <a href="docs/" style="--i:5"><span>Docs</span><small>06</small></a>
+  <a href="/docs/" style="--i:5"><span>Docs</span><small>06</small></a>
 </div>
 
 <!-- fixed left rail -->
 <aside class="rail" aria-label="Site rail">
   <div class="rail-top">
-    <a href="index.html" aria-label="Witch Launcher — home">
+    <a href="/index.html" aria-label="Witch Launcher — home">
       <svg width="20" height="31" viewBox="0 0 618 955" data-loader-to aria-hidden="true"><path fill="currentColor" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/></svg>
     </a>
   </div>
@@ -71,13 +71,13 @@
     <a href="#tour">Tour</a>
     <a href="#install">Install</a>
     <a href="#download">Download</a>
-    <a href="docs/">Docs</a>
+    <a href="/docs/">Docs</a>
   </nav>
   <div class="rail-foot">
     <button class="theme-toggle icon-btn" aria-label="Toggle dark / light theme" aria-pressed="true">
       <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor" stroke="none"/></svg>
     </button>
-    <a class="icon-btn mono-sm" href="vi/" lang="vi" hreflang="vi" style="font-size:10px" aria-label="Tiếng Việt">VI</a>
+    <a class="icon-btn mono-sm js-langlink" href="/vi/" lang="vi" hreflang="vi" style="font-size:10px" aria-label="Tiếng Việt">VI</a>
     <a class="icon-btn" href="https://github.com/Witch-Launcher/Witch_launcher" target="_blank" rel="noopener" aria-label="GitHub repository">
       <svg class="gh" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.111.82-.261.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z"/></svg>
     </a>
@@ -102,7 +102,7 @@
       <p class="hero-copy boot" style="--bd:360ms">Witch Launcher brings the full Java Edition to iPhone &amp; iPad — mods, shaders, six renderers and Java runtimes inside a touch-first launcher, powered by Metal.</p>
       <div class="hero-ctas boot" style="--bd:450ms">
         <a class="btn btn-solid" href="#download">Download<span class="mono-sm" style="letter-spacing:0" id="ver-chip2">&nbsp;v0.0.3</span></a>
-        <a class="btn btn-ghost" href="docs/">Read the docs</a>
+        <a class="btn btn-ghost" href="/docs/">Read the docs</a>
       </div>
       <div class="hero-stats boot" style="--bd:540ms">
         <div class="hstat"><b id="hero-stars">5</b><span>Stars on GitHub</span></div>
@@ -123,7 +123,7 @@
         </svg>
       </div>
       <figure class="hero-ipad boot" style="--bd:150ms">
-        <img src="assets/img/hero/ipad.png" alt="iPad running the Witch Launcher identity screen — a white diamond mark on a ringed black display" width="2000" height="1467" fetchpriority="high">
+        <img src="/assets/img/hero/ipad.png" alt="iPad running the Witch Launcher identity screen — a white diamond mark on a ringed black display" width="2000" height="1467" fetchpriority="high">
       </figure>
     </div>
     <div class="hero-floortag boot" style="--bd:640ms">
@@ -179,7 +179,7 @@
             <li>Isolated per-profile instances</li>
           </ul>
         </div>
-        <figure class="frow-media" data-speed="-0.05"><img src="assets/img/devices/versions.png" alt="Tablet showing the version overview screen in Witch Launcher" loading="lazy" width="1600" height="933"></figure>
+        <figure class="frow-media" data-speed="-0.05"><img src="/assets/img/devices/versions.png" alt="Tablet showing the version overview screen in Witch Launcher" loading="lazy" width="1600" height="933"></figure>
       </div>
 
       <div class="frow">
@@ -194,7 +194,7 @@
             <li>Per-profile: mods · shaders · resource packs · worlds</li>
           </ul>
         </div>
-        <figure class="frow-media" data-speed="-0.05"><img src="assets/img/devices/mods.png" alt="Tablet showing the in-app mods browser" loading="lazy" width="1600" height="933"></figure>
+        <figure class="frow-media" data-speed="-0.05"><img src="/assets/img/devices/mods.png" alt="Tablet showing the in-app mods browser" loading="lazy" width="1600" height="933"></figure>
       </div>
 
       <div class="frow">
@@ -209,7 +209,7 @@
             <li>Frame Generation (MADI · camera reproject)</li>
           </ul>
         </div>
-        <figure class="frow-media" data-speed="-0.05"><img src="assets/img/devices/shaders.png" alt="Tablet showing shader pack content in the launcher" loading="lazy" width="1600" height="933"></figure>
+        <figure class="frow-media" data-speed="-0.05"><img src="/assets/img/devices/shaders.png" alt="Tablet showing shader pack content in the launcher" loading="lazy" width="1600" height="933"></figure>
       </div>
 
       <div class="frow">
@@ -224,7 +224,7 @@
             <li>In-app self-update: Auto / Beta / Stable channels</li>
           </ul>
         </div>
-        <figure class="frow-media" data-speed="-0.05"><img src="assets/img/devices/modpacks.png" alt="Tablet showing modpack content management" loading="lazy" width="1600" height="933"></figure>
+        <figure class="frow-media" data-speed="-0.05"><img src="/assets/img/devices/modpacks.png" alt="Tablet showing modpack content management" loading="lazy" width="1600" height="933"></figure>
       </div>
 
       <div class="frow">
@@ -239,7 +239,7 @@
             <li>Built-in StikJIT on iOS 17.4+</li>
           </ul>
         </div>
-        <figure class="frow-media" data-speed="-0.05"><img src="assets/img/devices/settings.png" alt="Tablet showing Witch Launcher settings screen" loading="lazy" width="1600" height="933"></figure>
+        <figure class="frow-media" data-speed="-0.05"><img src="/assets/img/devices/settings.png" alt="Tablet showing Witch Launcher settings screen" loading="lazy" width="1600" height="933"></figure>
       </div>
     </div>
   </section>
@@ -264,9 +264,9 @@
       </div>
 
       <div class="plates">
-        <figure class="plate" data-reveal><img src="assets/img/perf/cpu.png" alt="Framed performance report: CPU percent curves over four recordings" loading="lazy" width="1200" height="1200">
+        <figure class="plate" data-reveal><img src="/assets/img/perf/cpu.png" alt="Framed performance report: CPU percent curves over four recordings" loading="lazy" width="1200" height="1200">
           <figcaption class="mono-sm"><span>CPU — 4 recordings</span><span>◆ WITCH</span></figcaption></figure>
-        <figure class="plate" data-reveal style="--i:1"><img src="assets/img/perf/gpu.png" alt="Framed performance report: GPU percent curves" loading="lazy" width="1200" height="1200">
+        <figure class="plate" data-reveal style="--i:1"><img src="/assets/img/perf/gpu.png" alt="Framed performance report: GPU percent curves" loading="lazy" width="1200" height="1200">
           <figcaption class="mono-sm"><span>GPU — same session</span><span>◆ WITCH</span></figcaption></figure>
       </div>
       <p class="u-dim" style="margin-top:20px; max-width:60ch" data-reveal>Performance HUD with FPS / CPU / GPU / RAM / temperature / battery. Record sessions, export charts as PNG or PDF, and tune per-renderer options like frame pacing, shader caches and max FPS.</p>
@@ -299,17 +299,17 @@
         </div>
 
         <div class="show-stage" tabindex="0" role="tabpanel" aria-label="Current screen preview">
-          <figure class="show-slide on" aria-hidden="false"><img src="assets/img/tour/t01.png" alt="Witch Launcher home — identity screen with diamond mark and PLAY" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t02.png" alt="Mods browser — Modrinth and CurseForge browse and one-tap install" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t03.png" alt="Modpacks — CurseForge manifest import and content packs" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t04.png" alt="Worlds and shaders — shader packs and resource packs per profile" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t05.png" alt="Accounts — Microsoft, local, demo and Ely.by sign-in" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t06.png" alt="Runtimes — Java 8, 17, 21, 25 and LWJGL selection" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t07.png" alt="Settings — renderer and display configuration" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t08.png" alt="Touch controls — on-screen layouts and gyro aim" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t09.png" alt="Debug and JIT — StikJIT status and debugger tools" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t10.png" alt="Gameplay — Minecraft with the touch HUD overlay" loading="lazy" width="1600" height="900"></figure>
-          <figure class="show-slide" aria-hidden="true"><img src="assets/img/tour/t11.png" alt="Performance — FPS, CPU, GPU, RAM, temperature and battery HUD" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide on" aria-hidden="false"><img src="/assets/img/tour/t01.png" alt="Witch Launcher home — identity screen with diamond mark and PLAY" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t02.png" alt="Mods browser — Modrinth and CurseForge browse and one-tap install" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t03.png" alt="Modpacks — CurseForge manifest import and content packs" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t04.png" alt="Worlds and shaders — shader packs and resource packs per profile" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t05.png" alt="Accounts — Microsoft, local, demo and Ely.by sign-in" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t06.png" alt="Runtimes — Java 8, 17, 21, 25 and LWJGL selection" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t07.png" alt="Settings — renderer and display configuration" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t08.png" alt="Touch controls — on-screen layouts and gyro aim" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t09.png" alt="Debug and JIT — StikJIT status and debugger tools" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t10.png" alt="Gameplay — Minecraft with the touch HUD overlay" loading="lazy" width="1600" height="900"></figure>
+          <figure class="show-slide" aria-hidden="true"><img src="/assets/img/tour/t11.png" alt="Performance — FPS, CPU, GPU, RAM, temperature and battery HUD" loading="lazy" width="1600" height="900"></figure>
 
           <div class="show-bar" aria-hidden="true"><i style="width:9.09%"></i></div>
           <div class="show-count" aria-hidden="true"><b class="num-tab">01</b><span>/ 11</span></div>
@@ -366,7 +366,7 @@
         <div><span class="k mono-sm">MODS</span><span class="v">Fabric · Quilt · Forge · NeoForge</span></div>
       </div>
 
-      <p class="u-dim" style="margin-top:22px; max-width:64ch" data-reveal>JIT is what makes Java run at full speed — most setup hurdles land here. The <a href="docs/#/jit" style="color:var(--fg);text-decoration:underline;text-underline-offset:3px">JIT guide</a> covers every method, pairing files and the built-in helper.</p>
+      <p class="u-dim" style="margin-top:22px; max-width:64ch" data-reveal>JIT is what makes Java run at full speed — most setup hurdles land here. The <a href="/docs/#/jit" style="color:var(--fg);text-decoration:underline;text-underline-offset:3px">JIT guide</a> covers every method, pairing files and the built-in helper.</p>
     </div>
   </section>
 
@@ -419,7 +419,7 @@
           <a class="dl-row" href="https://github.com/Witch-Launcher/Witch_launcher/releases/tag/0.0.2-pre" target="_blank" rel="noopener"><span class="tag num-tab">0.0.2-pre</span><span class="nm">Witch Launcher 0.0.2 — Pre-release</span><span class="dt">AUG 29, 2026</span><span class="ct num-tab">1,059 ↓</span></a>
         </div>
       </div>
-      <p class="u-dim mono" style="margin-top:20px; font-size:12.5px" data-reveal>Builds are unsigned — you pick the signing method: SideStore, AltStore, TrollStore or your own certificates. Read the <a href="docs/#/getting-started" style="color:var(--fg)">getting started guide</a> first.</p>
+      <p class="u-dim mono" style="margin-top:20px; font-size:12.5px" data-reveal>Builds are unsigned — you pick the signing method: SideStore, AltStore, TrollStore or your own certificates. Read the <a href="/docs/#/getting-started" style="color:var(--fg)">getting started guide</a> first.</p>
     </div>
   </section>
 
@@ -444,8 +444,8 @@
           <h4>Site</h4>
           <a href="#features">Features</a>
           <a href="#download">Download</a>
-          <a href="docs/">Documentation</a>
-          <a href="docs/#/changelog">Changelog</a>
+          <a href="/docs/">Documentation</a>
+          <a href="/docs/#/changelog">Changelog</a>
         </div>
         <div class="foot-col" data-reveal style="--i:2">
           <h4>Community</h4>
@@ -464,6 +464,6 @@
   </footer>
 </main>
 
-<script src="assets/js/main.js" defer></script>
+<script src="/assets/js/main.js" defer></script>
 </body>
 </html>
