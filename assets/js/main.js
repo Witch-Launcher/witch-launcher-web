@@ -30,10 +30,16 @@
     const x = r.left + r.width / 2, y = r.top + r.height / 2;
     const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
     const dur = Math.min(2300, Math.max(850, Math.round(radius * 0.95))); /* constant speed: landscape slower, portrait faster */
-    const t = document.startViewTransition(() => {
-      root.classList.add("wipe-snap");       /* freeze every color transition */
-      apply();                               /* the flip now lands atomically */
-    });
+    let t = null;
+    try {
+      t = document.startViewTransition(() => {
+        root.classList.add("wipe-snap");       /* freeze every color transition */
+        apply();                               /* the flip now lands atomically */
+      });
+    } catch {                                  /* e.g. a transition is already running — flip anyway */
+      apply();
+      return;
+    }
     /* wipe-snap must outlive the pseudo tree: dropping it while the
        ::view-transition-old/new(root) elements are still mounted lets the
        default vtIn/vtOut animations restart on top of the circle reveal —
@@ -192,6 +198,7 @@
       if (md && mc) mc.setAttribute("content", md.getAttribute("content") || "");
       syncTrees(document.body, dest.body);
       history.replaceState(null, "", url);
+      if (releaseData) renderReleases(releaseData);   /* localize the injected release markup */
     };
     if (!document.startViewTransition || reduced) { apply(); return; }
     circleWipe(a, apply);                                       /* same circular reveal language as the theme wipe */
@@ -426,6 +433,19 @@
     catch { return iso; }
   };
   const fmtMB = s => s + " MB";
+  /* release UI copy, picked by current language — re-evaluated on every render so the
+     in-place EN↔VI morph can re-render the injected markup instead of leaving it English */
+  const RL = () => document.documentElement.lang === "vi"
+    ? { latest: "Bản mới nhất", stable: "kênh ổn định",
+        allReleases: n => `Tất cả bản phát hành · ${n.toLocaleString("vi-VN")} lượt tải`,
+        standard: "Bản chuẩn", slim: "Bản rút gọn · không kèm runtime",
+        beta: "Kênh beta", pre: "Pre-release",
+        labels: { ipa: "Chuẩn · Sideload", tipa: "TrollStore · .tipa", "slim-ipa": "Gọn · Sideload", "slim-tipa": "Gọn · TrollStore" } }
+    : { latest: "Latest release", stable: "stable channel",
+        allReleases: n => `All releases · ${n.toLocaleString("en-US")} downloads`,
+        standard: "Standard build", slim: "Slimmed build · no bundled runtimes",
+        beta: "Beta channel", pre: "Pre-release",
+        labels: { ipa: "Standard · Sideload", tipa: "TrollStore · .tipa", "slim-ipa": "Slim · Sideload", "slim-tipa": "Slim · TrollStore" } };
   const kindOf = n => {
     const l = String(n).toLowerCase();
     if (l.includes("checksum") || l.includes("release_notes")) return null;
@@ -438,17 +458,20 @@
   function assetCard(a) {
     const k = kindOf(a.n);
     if (!k || k === "other") return "";
-    const label = { ipa: "Standard · Sideload", tipa: "TrollStore · .tipa", "slim-ipa": "Slim · Sideload", "slim-tipa": "Slim · TrollStore" }[k];
+    const label = RL().labels[k];
     const idx = ["0", "1", "2", "3"][Math.floor(Math.random() * 4)];
     return `<a class="asset" data-reveal style="--i:${idx}" href="${a.u}" rel="noopener" target="_blank">
       <span class="a-name">${a.n}</span>
       <span class="a-foot"><span class="mono-sm">${label}</span><span class="a-dl">${fmtMB(a.s)} · ${a.d} ↓</span></span>
     </a>`;
   }
+  let releaseData = null;   /* last payload renderReleases used — re-rendered (localized) on every in-place language morph */
   function renderReleases(data) {
     const box = $("#dl-root");
     if (!box || !data?.stable) return;
+    releaseData = data;
     const s = data.stable;
+    const L = RL();
     const groups = { core: [], slim: [] };
     (s.assets || []).forEach(a => { const k = kindOf(a.n); if (!k) return; (k.startsWith("slim") ? groups.slim : groups.core).push(a); });
     const v = verOf(s.name) || "";
@@ -458,21 +481,21 @@
     box.innerHTML = `
       <div class="dl-hero" data-reveal>
         <div>
-          <div class="eyebrow" style="margin-bottom:14px"><b>Latest release</b> · stable channel</div>
+          <div class="eyebrow" style="margin-bottom:14px"><b>${L.latest}</b> · ${L.stable}</div>
           <div class="dl-ver num-tab">${v}</div>
         </div>
         <div class="dl-meta">
           <span class="chip"><i></i>${fmtDate(s.date)}</span>
-          <a class="btn btn-ghost" href="${data.releasesUrl || "https://github.com/Witch-Launcher/Witch_launcher/releases"}" target="_blank" rel="noopener">All releases · ${sums.toLocaleString()} downloads</a>
+          <a class="btn btn-ghost" href="${data.releasesUrl || "https://github.com/Witch-Launcher/Witch_launcher/releases"}" target="_blank" rel="noopener">${L.allReleases(sums)}</a>
         </div>
       </div>
       <div class="asset-groups">
-        <div><div class="ag-label mono-sm">Standard build</div><div class="assets">${groups.core.map(assetCard).join("")}</div></div>
-        ${groups.slim.length ? `<div><div class="ag-label mono-sm">Slimmed build · no bundled runtimes</div><div class="assets">${groups.slim.map(assetCard).join("")}</div></div>` : ""}
-        ${data.beta ? `<div><div class="ag-label mono-sm">Beta channel</div>
+        <div><div class="ag-label mono-sm">${L.standard}</div><div class="assets">${groups.core.map(assetCard).join("")}</div></div>
+        ${groups.slim.length ? `<div><div class="ag-label mono-sm">${L.slim}</div><div class="assets">${groups.slim.map(assetCard).join("")}</div></div>` : ""}
+        ${data.beta ? `<div><div class="ag-label mono-sm">${L.beta}</div>
         <div class="assets"><a class="asset" data-reveal href="${data.beta.url}" target="_blank" rel="noopener">
           <span class="a-name">${data.beta.name}</span>
-          <span class="a-foot"><span class="mono-sm">Pre-release</span><span class="a-dl">${fmtDate(data.beta.date)} →</span></span>
+          <span class="a-foot"><span class="mono-sm">${L.pre}</span><span class="a-dl">${fmtDate(data.beta.date)} →</span></span>
         </a></div></div>` : ""}
       </div>
       <div class="dl-list">
@@ -480,7 +503,7 @@
           <span class="tag num-tab">${h.tag}</span>
           <span class="nm">${h.name}</span>
           <span class="dt">${fmtDate(h.date)}</span>
-          <span class="ct num-tab">${h.dls ? h.dls.toLocaleString() + " ↓" : ""}</span>
+           <span class="ct num-tab">${h.dls ? h.dls.toLocaleString(document.documentElement.lang === "vi" ? "vi-VN" : "en-US") + " ↓" : ""}</span>
         </a>`).join("")}
       </div>`;
     observeReveals();

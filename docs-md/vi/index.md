@@ -1,5 +1,5 @@
 ---
-title: "Documentation"
+title: "Tổng quan"
 group: "Reference"
 desc: "Mọi thứ về việc chạy Minecraft: Java Edition trên iPhone và iPad — từ lần sideload đầu tiên đến plugin, renderer và lịch sử phát hành."
 ---
