@@ -26,7 +26,7 @@
   const PAGES = ["getting-started", "jit", "runtimes", "plugins", "plugins-dev", "changelog", "faq", "credits"];
   const ALL = ["index", ...PAGES];
   const NAV = { "getting-started": "START", jit: "JIT", runtimes: "RUNTIMES", plugins: "PLUGINS", "plugins-dev": "PDEV", changelog: "LOG", faq: "FAQ", credits: "CREDITS" };
-  const mdBase = () => VI ? "../../docs-md/vi/" : "../docs-md/en/";
+  const mdBase = () => (atVIDir ? "../../docs-md/" : "../docs-md/") + (VI ? "vi/" : "en/");
 
   /* ————————————— data ————————————— */
   const pages = new Map();      /* id -> { meta, body } */
