@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tài liệu — Witch Launcher</title>
+<meta name="description" id="js-meta-desc" content="Cài đặt, JIT, runtime Java, plugin, FAQ và credits — tài liệu đầy đủ của Witch Launcher." data-en="Setup, JIT, Java runtimes, plugins, FAQ and credits — the complete Witch Launcher documentation." data-vi="Cài đặt, JIT, runtime Java, plugin, FAQ và credits — tài liệu đầy đủ của Witch Launcher.">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" type="image/svg+xml" href="../../assets/brand/favicon.svg">
+<meta property="og:title" content="Tài liệu — Witch Launcher">
+<meta property="og:description" content="Cài đặt, JIT, runtime Java, plugin, FAQ và credits cho Witch Launcher.">
+<meta property="og:type" content="website">
+<script>
+(function(){try{var t=localStorage.getItem("witch-theme");if(!t)t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<link rel="stylesheet" href="../../assets/css/style.css">
+<noscript><style>.witch-loader{display:none!important}.prose-skel{display:none!important}</style></noscript>
+</head>
+<body class="has-left">
+<div class="witch-loader" data-loader aria-hidden="true" role="presentation">
+  <div class="wl-stage">
+    <svg class="wl-mark" viewBox="0 0 618 955" aria-hidden="true"><path class="wl-edge" d="M309 108 L540 477.5 L309 847 L78 477.5 Z"/><path class="wl-path" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/><path class="wl-fill" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/></svg>
+    <div class="wl-meta"><span class="wl-label">Witch Launcher</span><span class="wl-pct num-tab">00</span></div>
+    <div class="wl-note">Tài liệu</div>
+  </div>
+</div>
+<a class="skip" href="#doc-article">Tới nội dung</a>
+
+<aside class="rail" aria-label="Điều hướng chính">
+  <div class="rail-top">
+    <a href="../index.html" aria-label="Witch Launcher — trang chính">
+      <svg width="20" height="31" viewBox="0 0 618 955" data-loader-to aria-hidden="true"><path fill="currentColor" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/></svg>
+    </a>
+  </div>
+  <nav class="rail-nav" aria-label="Phần"><span class="rail-line" aria-hidden="true"><i></i></span></nav>
+  <div class="rail-foot">
+    <button class="theme-toggle icon-btn" aria-label="Giao diện sáng / tối" aria-pressed="true">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.2"/><path d="M12 3.8a8.2 8.2 0 0 1 0 16.4z" fill="currentColor" stroke="none"/></svg>
+    </button>
+    <a class="icon-btn mono-sm js-langlink" data-base="../../docs/index.html" href="../../docs/index.html" hreflang="en" style="font-size:10px" aria-label="English">EN</a>
+    <a class="icon-btn" href="https://github.com/Witch-Launcher/Witch_launcher" target="_blank" rel="noopener" aria-label="Kho lưu trữ GitHub">
+      <svg class="gh" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.111.82-.261.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12z"/></svg>
+    </a>
+  </div>
+</aside>
+
+<header class="docsbar">
+  <button class="sb-toggle icon-btn" aria-label="Bật/tắt menu tài liệu"><svg class="icon" viewBox="0 0 24 24"><path d="M4 9h16M4 15h16"/></svg></button>
+  <span class="path"><a href="#/" style="color:var(--fg)">DOCS</a><span class="sep">/</span><b>Tài liệu</b></span>
+  <span class="docsbar-spacer"></span>
+  <a class="mono-sm js-site-label" href="../index.html" hreflang="vi" data-en="SITE" data-vi="TRANG CHỦ" style="font-size:9.5px; color:var(--dim)">TRANG CHỦ</a>
+</header>
+
+<aside class="sidebar" aria-label="Tài liệu">
+  <nav class="docnav" aria-label="Phần"></nav>
+</aside>
+
+<div class="page has-left">
+<article class="article" id="article">
+  <nav class="sectionbar" id="section-bar" aria-label="Mục lục trong trang"></nav>
+  <div class="article-body" id="doc-article">
+    <header class="doc-head" data-reveal>
+      <span class="eyebrow"><b id="doc-num">00</b> — <span id="doc-group">TÀI LIỆU</span></span>
+      <h1 id="doc-title">Tài liệu</h1>
+      <p id="doc-desc">Mọi thứ từ bản tải xuống tới một dòng lệnh chạy được.</p>
+    </header>
+
+    <div class="prose">
+      <div class="prose-skel" aria-hidden="true">
+        <span style="--w:92%"></span><span style="--w:78%"></span><span style="--w:100%"></span><span style="--w:64%"></span><span style="--w:88%"></span><span style="--w:40%"></span>
+      </div>
+    </div>
+
+    <nav class="doc-pager" aria-label="Phân trang"></nav>
+  </div>
+  <nav class="toc" aria-label="Trong trang"></nav>
+</article>
+</div>
+
+<script src="../../assets/js/marked.min.js" defer></script>
+<script src="../../assets/js/docs-runtime.js" defer></script>
+<script src="../../assets/js/main.js" defer></script>
+</body>
+</html>

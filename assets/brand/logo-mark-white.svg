@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 618 955" role="img" aria-label="Witch Launcher">
+  <title>Witch Launcher</title>
+  <g class="mark">
+  <path class="mk-shape" fill="#F5F5F5" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/>
+  <path class="mk-left" fill="#F5F5F5" fill-opacity=".78" d="M309 0 L0 477.5 L309 955 Z"/>
+  <path class="mk-right" fill="#F5F5F5" d="M309 0 L618 477.5 L309 955 Z"/>
+  <path class="mk-edge" fill="none" stroke="#F5F5F5" stroke-opacity=".32" stroke-width="6.8" stroke-linejoin="round" d="M309 0 L618 477.5 L309 955 L0 477.5 Z"/>
+  </g>
+</svg>

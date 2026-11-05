@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://witch-launcher.github.io/sitemap.xml
