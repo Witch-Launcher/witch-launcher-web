@@ -689,6 +689,20 @@
   .doc-card .mono-sm { color: var(--faint); }
   .doc-card h3 { font-size: 21px; letter-spacing: -.02em; }
   .doc-card p { color: var(--dim); font-size: 14.5px; }
+  .doc-card-proj { background: var(--bg-raise); }
+
+  /* project docs — sections pulled from the sibling repositories */
+  .prose-h2 { font-size: clamp(24px, 2.4vw, 30px); letter-spacing: -.03em; margin: 62px 0 0; }
+  .prose-h2 + .doc-cards { margin-top: 22px; }
+  .proj-head { display: grid; gap: 12px; padding: 22px 24px; border: 1px solid var(--line); background: var(--bg-raise); margin-top: 8px; }
+  .proj-repo { font-family: var(--font-mono); font-size: 13px; color: var(--fg); text-decoration: none; letter-spacing: .02em; }
+  .proj-repo::before { content: "↗ "; color: var(--faint); }
+  .proj-repo:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .proj-head p { font-size: 14.5px; margin: 0; }
+  .docnav .sub-grp { margin: 14px 0 4px 10px; padding-left: 10px; border-left: 1px solid var(--line); }
+  .docnav .sub-grp > .mono-sm { display: block; color: var(--faint); font-size: 9px; margin-bottom: 4px; letter-spacing: .18em; }
+  .docnav .sub-grp a { font-size: 13.5px; padding: 5px 8px; }
+  .rail-sep { display: block; width: 14px; height: 1px; background: var(--line-strong); margin: 6px auto; }
 
   /* TOC always visible — like "On this page" */
   .toc {

@@ -1,0 +1,110 @@
+{
+  "id": "tglmt",
+  "project": "TGLMT",
+  "repository": "https://github.com/Witch-Launcher/TGLMT",
+  "branch": "main",
+  "section": "Projects",
+  "lang": "en",
+  "groups": [
+    "Overview",
+    "Architecture",
+    "API",
+    "Integration",
+    "Compatibility",
+    "Limits",
+    "Performance",
+    "Legal"
+  ],
+  "docs": [
+    {
+      "slug": "getting-started",
+      "group": "Overview",
+      "file": "getting-started.md",
+      "source": "en/getting-started.md",
+      "sourceLang": "en",
+      "title": "Getting Started",
+      "desc": "This page covers the build matrix, how to run the tests, a minimal first frame, and how to tell whether the real Metal backend is active."
+    },
+    {
+      "slug": "architecture",
+      "group": "Architecture",
+      "file": "architecture.md",
+      "source": "en/architecture.md",
+      "sourceLang": "en",
+      "title": "Architecture",
+      "desc": "This page describes the runtime path of a single OpenGL call, from the entry point to Metal work, and the deferred-execution model that batches it."
+    },
+    {
+      "slug": "api",
+      "group": "API",
+      "file": "api.md",
+      "source": "en/api.md",
+      "sourceLang": "en",
+      "title": "API Reference",
+      "desc": "TGLMT exposes four surfaces. Pick the highest level that your application can use."
+    },
+    {
+      "slug": "integration",
+      "group": "Integration",
+      "file": "integration.md",
+      "source": "en/integration.md",
+      "sourceLang": "en",
+      "title": "Integration",
+      "desc": "This page covers embedding TGLMT into an iOS application: which artefact to ship, how to load it, what the layer must look like, and how to verify a first render."
+    },
+    {
+      "slug": "launcher",
+      "group": "Integration",
+      "file": "launcher.md",
+      "source": "en/launcher.md",
+      "sourceLang": "en",
+      "title": "Embedding in an iOS launcher",
+      "desc": "Reference integration: Natives/ctxbridges/tglmtbridge.m in the Angel-Aura-Amethyst-iOS launcher (renderer key libtglmt.dylib)."
+    },
+    {
+      "slug": "compatibility",
+      "group": "Compatibility",
+      "file": "compatibility.md",
+      "source": "en/compatibility.md",
+      "sourceLang": "en",
+      "title": "Compatibility & Performance",
+      "desc": "This page states what TGLMT does, what it emulates, what it only records, and what it does not do — plus the counters and commands you can use to verify any of those claims against the current tree."
+    },
+    {
+      "slug": "limits",
+      "group": "Limits",
+      "file": "limits.md",
+      "source": "en/limits.md",
+      "sourceLang": "en",
+      "title": "Limits (honest)",
+      "desc": "Decl coverage is 100% (698 core + 3 compat/extension extras, verified via symbol table). Behavior coverage is not: entries below are no-ops, trace-only, or CPU approximations. Anything outside the converter subset fails "
+    },
+    {
+      "slug": "perf",
+      "group": "Performance",
+      "file": "perf.md",
+      "source": "en/perf.md",
+      "sourceLang": "en",
+      "title": "Performance (deferred full — honest numbers)",
+      "desc": "Target: Minecraft Java vanilla on iPhone A11+ (TBDR) and MacIntel (IMR/discrete), both real Metal. Null backend stays green on CI (logic only)."
+    },
+    {
+      "slug": "privacy",
+      "group": "Legal",
+      "file": "privacy.md",
+      "source": "en/privacy.md",
+      "sourceLang": "en",
+      "title": "TGLMT — Privacy Policy",
+      "desc": "TGLMT is an OpenGL 4.6 Core → Metal translation layer for iOS and macOS. It is MIT licensed."
+    },
+    {
+      "slug": "terms",
+      "group": "Legal",
+      "file": "terms.md",
+      "source": "en/terms.md",
+      "sourceLang": "en",
+      "title": "TGLMT — Terms of Service",
+      "desc": "By using TGLMT you agree to these terms."
+    }
+  ]
+}

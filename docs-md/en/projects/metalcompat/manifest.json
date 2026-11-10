@@ -1,0 +1,158 @@
+{
+  "id": "metalcompat",
+  "project": "MetalCompat",
+  "repository": "https://github.com/Witch-Launcher/MetalCompat",
+  "branch": "main",
+  "section": "Projects",
+  "lang": "en",
+  "groups": [
+    "Research",
+    "Architecture",
+    "Status",
+    "Compatibility",
+    "Capability",
+    "API",
+    "Runtime",
+    "Testing",
+    "Integration",
+    "Performance",
+    "Legal"
+  ],
+  "docs": [
+    {
+      "slug": "research",
+      "group": "Research",
+      "file": "RESEARCH.md",
+      "source": "RESEARCH.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — RESEARCH",
+      "desc": "Research policy: SPEC.md §10. Every non-UNKNOWN claim below must carry a source that is either the installed SDK headers or an official Apple documentation page. Symbols were checked in the actual SDK headers of this mac"
+    },
+    {
+      "slug": "architecture",
+      "group": "Architecture",
+      "file": "ARCHITECTURE.md",
+      "source": "ARCHITECTURE.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — Architecture (v0.2.0 implementation map)",
+      "desc": "This document maps SPEC §3 (layered runtime) onto concrete modules and files that exist or are staged in this repository. Data flow is exactly SPEC §3.1."
+    },
+    {
+      "slug": "implementation-status",
+      "group": "Status",
+      "file": "IMPLEMENTATION_STATUS.md",
+      "source": "IMPLEMENTATION_STATUS.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — IMPLEMENTATION STATUS (v0.4.0, 2026-10-30)",
+      "desc": "Honest states per SPEC §14.4 vocabulary: implemented / compiled / unit-tested / host-tested / physical-device-tested. Nothing below claims physical-device testing on A9 — there is no A9 in the current environment."
+    },
+    {
+      "slug": "compatibility-strategy",
+      "group": "Compatibility",
+      "file": "COMPATIBILITY_STRATEGY.md",
+      "source": "COMPATIBILITY_STRATEGY.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — Compatibility Strategy (v0.2.0)",
+      "desc": "Concrete application of SPEC §7 to the features handled so far, plus the rules for everything that comes later."
+    },
+    {
+      "slug": "gpu-capability-matrix",
+      "group": "Capability",
+      "file": "GPU_CAPABILITY_MATRIX.md",
+      "source": "GPU_CAPABILITY_MATRIX.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — GPU Capability Matrix (M0 draft)",
+      "desc": "Source: Apple MTLGPUFamily documentation page (RESEARCH §8)."
+    },
+    {
+      "slug": "api-inventory",
+      "group": "API",
+      "file": "API_INVENTORY.md",
+      "source": "API_INVENTORY.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — API Inventory (extract)",
+      "desc": "Registry record fields (JSON schema enforced by the validator): id, symbol, category, framework, requiredOs, osAvailability, hardwareRequirement, runtimeGate, compatibilityState, fallbackStrategy, notes, verified (sdk, d"
+    },
+    {
+      "slug": "gpu-runtime",
+      "group": "Runtime",
+      "file": "GPU_RUNTIME.md",
+      "source": "GPU_RUNTIME.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — GPU Runtime (v0.2.0)",
+      "desc": "Implements SPEC §5: real Metal workloads on the real Apple GPU. Nothing here invents hardware; every kernel and pass must be expressible in public MSL/MTL."
+    },
+    {
+      "slug": "cpu-runtime",
+      "group": "Runtime",
+      "file": "CPU_RUNTIME.md",
+      "source": "CPU_RUNTIME.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — CPU Runtime (v0.2.0)",
+      "desc": "Implements SPEC §4 on the current repository shape. Do not emulate a CPU (SPEC D-004); this module prepares, validates, schedules, and submits."
+    },
+    {
+      "slug": "testing",
+      "group": "Testing",
+      "file": "TESTING.md",
+      "source": "TESTING.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — TESTING (v0.2.0 minimum)",
+      "desc": "Implementing SPEC §12 as far as this environment allows. The critical honesty rule is enforced: simulator/host results never substitute physical-device validation."
+    },
+    {
+      "slug": "device-test-session",
+      "group": "Testing",
+      "file": "DEVICE_TEST_SESSION.md",
+      "source": "DEVICE_TEST_SESSION.md",
+      "sourceLang": "en",
+      "title": "Device Test Session — iPhone 8 Plus (A11/Apple4) first, then A10/A9",
+      "desc": "- iPhone 8 Plus (A11), any iOS 14+ (record exact OS version per run — on iOS 16+ the device additionally advertises MTLGPUFamilyMetal3). - Mac host: this repo, Xcode 26.3. - Apple Developer account for device signing."
+    },
+    {
+      "slug": "render-test-app",
+      "group": "Testing",
+      "file": "RENDER_TEST_APP.md",
+      "source": "RENDER_TEST_APP.md",
+      "sourceLang": "en",
+      "title": "MCRenderTest — On-device Metal smoke-test app",
+      "desc": "Self-contained iOS app that runs the real Metal render/compute battery through the MetalCompat LegacyMetal backend directly on an iPhone's GPU and answers one question: do the compat ops behave there as they did on the h"
+    },
+    {
+      "slug": "moltenvk-integration",
+      "group": "Integration",
+      "file": "MOLTENVK_INTEGRATION.md",
+      "source": "MOLTENVK_INTEGRATION.md",
+      "sourceLang": "en",
+      "title": "MoltenVK / TGLMT Integration (scoped contract)",
+      "desc": "Status: documentation of intent — M9 not started. MetalCompat remains standalone (SPEC D-009: optional integration, no dependency, independently buildable and testable)."
+    },
+    {
+      "slug": "performance",
+      "group": "Performance",
+      "file": "PERFORMANCE.md",
+      "source": "PERFORMANCE.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — PERFORMANCE (v0.2.0 baseline record)",
+      "desc": "SPEC §6.4/§12.5 policy: identical workloads for MetalCompat vs direct native baseline; median and tails once sample sizes justify them. Until M8, this file records the slice numbers as raw, clearly-labelled observations."
+    },
+    {
+      "slug": "privacy",
+      "group": "Legal",
+      "file": "privacy.md",
+      "source": "privacy.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — Privacy Policy",
+      "desc": "MetalCompat is a modular compatibility runtime and SDK that maximizes usable Metal functionality on legacy Apple GPUs (starting with Apple A9). It is MIT licensed."
+    },
+    {
+      "slug": "terms",
+      "group": "Legal",
+      "file": "terms.md",
+      "source": "terms.md",
+      "sourceLang": "en",
+      "title": "MetalCompat — Terms of Service",
+      "desc": "By using MetalCompat you agree to these terms."
+    }
+  ]
+}

@@ -12,12 +12,16 @@
         pageTitle: t => `${t} — Tài liệu Witch Launcher`,
         notFound: "Không tìm thấy trang — quay về tổng quan.",
         callout: { NOTE: "GHI CHÚ", TIP: "MẸO", IMPORTANT: "QUAN TRỌNG", WARNING: "CẢNH BÁO" },
+        projects: "DỰ ÁN", project: "DỰ ÁN", source: "Nguồn", viewAll: "Xem tất cả",
+        langFallback: "Tài liệu gốc bằng tiếng Anh",
         groupAlias: g => ({ Overview: "TỔNG QUAN", Plugins: "PLUGIN", Reference: "THAM KHẢO", Legal: "PHÁP LÝ" }[g] || String(g).toUpperCase()) }
     : { home: "Overview", docs: "DOCS", toc: "On this page", eyebrow: "DOCS",
         prev: "Previous", next: "Next", kbd: "Press [ ] to switch pages",
         pageTitle: t => `${t} — Witch Launcher Docs`,
         notFound: "Page not found — back to the overview.",
         callout: { NOTE: "NOTE", TIP: "TIP", IMPORTANT: "IMPORTANT", WARNING: "WARNING" },
+        projects: "PROJECTS", project: "PROJECT", source: "Source", viewAll: "View all",
+        langFallback: "Original documentation is in English",
         groupAlias: g => ({ Overview: "OVERVIEW", Plugins: "PLUGIN", Reference: "REFERENCE", Legal: "LEGAL" }[g] || String(g).toUpperCase()) };
   let VI = document.documentElement.lang === "vi";
   let T = mkT(VI);
@@ -31,6 +35,25 @@
   const ALL = ["index", ...PAGES];
   const NAV = { "getting-started": "START", jit: "JIT", runtimes: "RUNTIMES", plugins: "PLUGINS", "plugins-dev": "PDEV", changelog: "LOG", faq: "FAQ", credits: "CREDITS", privacy: "PRIVACY", terms: "TERMS" };
   const mdBase = (vi) => siteRoot + "docs-md/" + (vi ? "vi/" : "en/");
+
+  /* ——— project docs: pulled from the sibling repositories ———
+     Each repo publishes docs/DOCS_MANIFEST.json declaring its branch, language
+     bases and the ordered markdown files. The site reads that manifest straight
+     from GitHub, so a repo push updates the docs without touching this repo.
+     A mirrored copy under docs-md/<lang>/projects/ is the offline fallback. */
+  const PROJECTS = [
+    { id: "launcher",    label: "Witch Launcher", repo: "Witch-Launcher/Witch_launcher",    branch: "beta", section: "Launcher" },
+    { id: "tglmt",       label: "TGLMT",          repo: "Witch-Launcher/TGLMT",              branch: "main", section: "Projects" },
+    { id: "tgles",       label: "TGLES",          repo: "Witch-Launcher/TGLES",              branch: "main", section: "Projects" },
+    { id: "metalcompat", label: "MetalCompat",    repo: "Witch-Launcher/MetalCompat",        branch: "main", section: "Projects" },
+    { id: "metalbridge", label: "MetalBridge",    repo: "Witch-Launcher/MetalMacOSPortiOS", branch: "main", section: "Projects" },
+  ];
+  const MANIFEST_FILE = "DOCS_MANIFEST.json";
+  const rawBase = p => `https://raw.githubusercontent.com/${p.repo}/${p.branch}/docs/`;
+  const projectBase = (id, vi) => mdBase(vi) + "projects/" + id + "/";
+  /* slug rule matches scripts/sync-project-docs.py */
+  const slugifyPath = rel => (rel.replace(/\.md$/i, "").toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")) || "doc";
 
   /* ————————————— data ————————————— */
   const pages = new Map();      /* id -> { meta, body } */
@@ -54,6 +77,97 @@
       }
     }
     return { meta, body };
+  };
+
+  /* ————————————— project docs ————————————— */
+  const projects = new Map();   /* id -> { meta, docs: Map(slug -> {meta, body}) } */
+  const firstHeading = text => {
+    const m = /^---\s*\n[\s\S]*?\n---\s*\n?([\s\S]*)$/.exec(text);
+    const body = m ? m[1] : text;
+    const h = /^#\s+(.+)$/m.exec(body);
+    return h ? h[1].replace(/\s*\{#.+\}\s*$/, "").trim() : "";
+  };
+  const firstPara = text => {
+    const body = text.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, "");
+    for (const block of body.split(/\n\s*\n/)) {
+      const s = block.trim();
+      if (!s || /^[#>|`\-*]/.test(s)) continue;
+      return s.replace(/[*_`>#]/g, "").replace(/\s+/g, " ").slice(0, 200);
+    }
+    return "";
+  };
+  /* fetch the manifest from GitHub; fall back to the mirrored copy */
+  const loadProject = async p => {
+    const local = projectBase(p.id, VI);
+    const live = rawBase(p);
+    let meta = null, entries = null;
+
+    try {
+      const r = await fetch(live + MANIFEST_FILE);
+      if (r.ok) {
+        meta = await r.json();
+        const bases = meta.bases || {};
+        const base = bases[VI] || bases.en || "";
+        entries = (meta.order || []).map(it => ({
+          slug: slugifyPath(it.file), group: it.group || "Docs",
+          file: it.file, source: base + it.file,
+        }));
+      }
+    } catch (e) { /* offline or repo unreachable — use the mirror */ }
+
+    if (!entries) {
+      try {
+        const r = await fetch(local + "manifest.json");
+        if (!r.ok) return null;
+        const m = await r.json();
+        meta = m;
+        entries = (m.docs || []).map(d => ({
+          slug: d.slug, group: d.group || "Docs", file: d.file,
+          source: d.source || d.file, title: d.title, desc: d.desc, sourceLang: d.sourceLang,
+        }));
+      } catch (e) { return null; }
+    }
+
+    const docs = new Map();
+    await Promise.all(entries.map(async e => {
+      let text = null;
+      try {                       /* live file from the repository */
+        const r = await fetch(live + e.source);
+        if (r.ok) text = await r.text();
+      } catch (err) { /* fall through to the mirror */ }
+      if (text == null) {         /* mirrored copy */
+        try {
+          const r = await fetch(local + e.slug + ".md");
+          if (r.ok) text = await r.text();
+        } catch (err) { return; }
+      }
+      if (text == null) return;
+      const parsed = parseFront(text);
+      /* the shell already renders the page title — drop the leading H1 so it
+         does not appear twice */
+      const body = parsed.body.replace(/^(\s*)#\s+[^\n]*\n+/, "$1");
+      docs.set(e.slug, {
+        meta: {
+          slug: e.slug, group: e.group, file: e.file,
+          title: e.title || parsed.meta.title || firstHeading(parsed.body) || e.slug,
+          desc: e.desc || parsed.meta.desc || firstPara(parsed.body),
+          sourceLang: e.sourceLang || (VI ? "vi" : "en"),
+        },
+        body,
+      });
+    }));
+
+    if (!docs.size) return null;
+    const groups = [];
+    for (const d of docs.values()) if (!groups.includes(d.meta.group)) groups.push(d.meta.group);
+    return { meta: { ...meta, id: p.id, label: p.label, repo: p.repo, branch: p.branch, groups }, docs };
+  };
+  const loadProjects = async () => {
+    projects.clear();
+    await Promise.all(PROJECTS.map(async p => {
+      const data = await loadProject(p);
+      if (data) projects.set(p.id, data);
+    }));
   };
 
   /* ————————————— markdown ————————————— */
@@ -98,8 +212,33 @@
       if (m) a.setAttribute("href", `#/${m[1]}${m[2] || ""}`);
     });
   };
+  /* links between docs of the same project keep working inside the site —
+     `host-abi.md` becomes `#/projects/tgles/host-abi` */
+  const rewriteProjectLinks = (rootEl, projectId) => {
+    const pr = projects.get(projectId);
+    if (!pr) return;
+    const byFile = new Map();
+    for (const d of pr.docs.values()) {
+      const base = d.meta.file.split("/").pop();
+      byFile.set(base.toLowerCase(), d.meta.slug);
+      byFile.set(d.meta.file.toLowerCase(), d.meta.slug);
+    }
+    $$("a[href]", rootEl).forEach(a => {
+      const href = a.getAttribute("href") || "";
+      if (/^(https?:|mailto:|#|\.\.\/|\.\/)/i.test(href)) return;
+      const clean = href.split("#")[0];
+      if (!clean) return;
+      const key = clean.replace(/^\.\//, "").toLowerCase();
+      const slug = byFile.get(key) || byFile.get(clean.split("/").pop().toLowerCase());
+      if (slug) a.setAttribute("href", `#/projects/${projectId}/${slug}`);
+    });
+  };
 
   /* ————————————— chrome builders ————————————— */
+  const activeProjectId = () => {
+    const page = route().page;
+    return page.startsWith("projects/") ? page.split("/")[1] : null;
+  };
   const buildSidebar = () => {
     const nav = $(".docnav");
     const html = [`<div class="grp"><span class="mono-sm">${T.docs}</span><a href="#/" data-nav="index">${T.home}</a></div>`];
@@ -115,6 +254,27 @@
         items.map(({ id, d }) => `<a href="#/${id}" data-nav="${id}"><span class="n">${String(PAGES.indexOf(id) + 1).padStart(2, "0")}</span>${d.meta.title}</a>`).join("") +
       `</div>`);
     });
+    /* project docs — the repositories publish their own manifest, so the order
+       and the groups below come straight from each repo */
+    const loaded = PROJECTS.filter(p => projects.has(p.id));
+    if (loaded.length) {
+      const active = activeProjectId();
+      html.push(`<div class="grp"><span class="mono-sm">${T.projects}</span>`);
+      for (const p of loaded) {
+        const pr = projects.get(p.id);
+        const isOpen = active === p.id;
+        html.push(`<a href="#/projects/${p.id}" data-nav="projects/${p.id}" class="${isOpen ? "on" : ""}"><span class="n">◆</span>${pr.meta.label || p.label}</a>`);
+        if (!isOpen) continue;
+        for (const g of pr.meta.groups) {
+          const items = [...pr.docs.values()].filter(d => d.meta.group === g);
+          if (!items.length) continue;
+          html.push(`<div class="sub-grp"><span class="mono-sm">${g}</span>` +
+            items.map(d => `<a href="#/projects/${p.id}/${d.meta.slug}" data-nav="projects/${p.id}/${d.meta.slug}">${d.meta.title}</a>`).join("") +
+            `</div>`);
+        }
+      }
+      html.push(`</div>`);
+    }
     html.push(`<div class="kbd-row mono-sm" aria-hidden="true">${T.kbd}</div>`);
     nav.innerHTML = html.join("");
     nav.addEventListener("click", e => {
@@ -124,8 +284,11 @@
   const buildRailNav = () => {
     const nav = $(".rail-nav");
     if (!nav) return;
+    const projLinks = PROJECTS.filter(p => projects.has(p.id))
+      .map(p => `<a href="#/projects/${p.id}" data-nav="projects/${p.id}">${p.label.toUpperCase().slice(0, 6)}</a>`).join("");
     nav.innerHTML = `<span class="rail-line" aria-hidden="true"><i></i></span>` +
-      PAGES.map(id => `<a href="#/${id}" data-nav="${id}">${NAV[id]}</a>`).join("");
+      PAGES.map(id => `<a href="#/${id}" data-nav="${id}">${NAV[id]}</a>`).join("") +
+      (projLinks ? `<span class="rail-sep" aria-hidden="true"></span>` + projLinks : "");
   };
 
   /* ————————————— rendering ————————————— */
@@ -142,6 +305,19 @@
     const i = raw.indexOf("#");
     return { page: (i === -1 ? raw : raw.slice(0, i)).toLowerCase() || "index", anchor: i === -1 ? "" : raw.slice(i + 1) };
   };
+  /* a route is either a site page ("jit") or a project page ("projects/tglmt/api") */
+  const resolve = (page) => {
+    if (pages.has(page)) return { kind: "page", id: page };
+    if (page.startsWith("projects/")) {
+      const [, id, slug] = page.split("/");
+      const proj = projects.get(id);
+      if (!proj) return { kind: "page", id: "index" };
+      if (!slug) return { kind: "project", id, slug: null };
+      if (proj.docs.has(slug)) return { kind: "project-doc", id, slug };
+      return { kind: "project", id, slug: null };
+    }
+    return { kind: "page", id: pages.has("index") ? "index" : (PAGES.find(p => pages.has(p)) || "index") };
+  };
   const jumpTo = (id) => {
     const el = id && document.getElementById(id);
     if (!el) return;
@@ -154,44 +330,101 @@
     else window.scrollTo({ top: 0 });
   };
   const cardHtml = () => {
-    const cards = PAGES.filter(id => pages.has(id)).map((id, i) => {
+    const cards = PAGES.filter(id => pages.has(id)).map((id) => {
       const d = pages.get(id);
       return `<a class="doc-card" href="#/${id}"><span class="mono-sm">${String(PAGES.indexOf(id) + 1).padStart(2, "0")} — ${T.groupAlias(d.meta.group)}</span><h3>${d.meta.title}</h3><p>${d.meta.desc || ""}</p></a>`;
     }).join("");
-    return `<div class="doc-cards">${cards}</div>`;
+    const pcards = PROJECTS.filter(p => projects.has(p.id)).map((p) => {
+      const pr = projects.get(p.id);
+      const n = pr.docs.size;
+      return `<a class="doc-card doc-card-proj" href="#/projects/${p.id}"><span class="mono-sm">${T.projects} — ${pr.meta.groups.length} ${VI ? "nhóm" : "groups"}</span><h3>${pr.meta.label || p.label}</h3><p>${n} ${VI ? "trang tài liệu" : "documentation pages"} · ${pr.meta.repo.replace("https://github.com/", "")}</p></a>`;
+    }).join("");
+    return `<div class="doc-cards">${cards}</div>` +
+      (pcards ? `<h2 class="prose-h2">${T.projects}</h2><div class="doc-cards">${pcards}</div>` : "");
+  };
+  /* index of one project: its docs grouped the way the repo manifest orders them */
+  const projectIndexHtml = (id) => {
+    const pr = projects.get(id);
+    if (!pr) return "";
+    const p = PROJECTS.find(x => x.id === id);
+    let html = `<div class="proj-head">
+      <a class="proj-repo" href="https://github.com/${pr.meta.repo}" target="_blank" rel="noopener">${pr.meta.repo.replace("https://github.com/", "")}</a>
+      <p class="u-dim">${VI ? "Tài liệu được đọc trực tiếp từ kho lưu trữ này. Thứ tự trang do" : "Documentation is read straight from this repository. The page order comes from"} <code>docs/${MANIFEST_FILE}</code>.</p>
+    </div>`;
+    for (const g of pr.meta.groups) {
+      const items = [...pr.docs.values()].filter(d => d.meta.group === g);
+      if (!items.length) continue;
+      html += `<h2 class="prose-h2">${g}</h2><div class="doc-cards">` +
+        items.map(d => `<a class="doc-card" href="#/projects/${id}/${d.meta.slug}"><span class="mono-sm">${g}</span><h3>${d.meta.title}</h3><p>${d.meta.desc || ""}</p></a>`).join("") +
+        `</div>`;
+    }
+    return html;
   };
 
   const renderCurrent = () => {
     const { page, anchor } = route();
-    let id = pages.has(page) ? page : "index";
-    if (!pages.has(id)) id = PAGES.find(p => pages.has(p));
-    const doc = pages.get(id);
-    currentKey = id + "#" + anchor;
+    const r = resolve(page);
+    const kind = r.kind, id = r.id, slug = r.slug;
+    const proj = kind === "project" || kind === "project-doc" ? projects.get(id) : null;
+
+    /* ——— page body ——— */
+    let title, desc, group, num, body, extra = "", navKey, backHref = null;
+    if (kind === "page") {
+      const doc = pages.get(id);
+      currentKey = id + "#" + anchor;
+      title = doc.meta.title || "Documentation";
+      desc = doc.meta.desc || "";
+      group = T.groupAlias(doc.meta.group || "Reference");
+      num = id === "index" ? "00" : String(PAGES.indexOf(id) + 1).padStart(2, "0");
+      body = doc.body;
+      extra = id === "index" ? cardHtml() : "";
+      navKey = id;
+    } else if (kind === "project") {
+      currentKey = "projects/" + id + "#" + anchor;
+      title = proj.meta.label || id;
+      desc = `${proj.docs.size} ${VI ? "trang tài liệu" : "documentation pages"} · ${proj.meta.repo.replace("https://github.com/", "")}`;
+      group = T.project;
+      num = "◆";
+      body = "";
+      extra = projectIndexHtml(id);
+      navKey = "projects/" + id;
+    } else {
+      const d = proj.docs.get(slug);
+      currentKey = "projects/" + id + "/" + slug + "#" + anchor;
+      title = d.meta.title;
+      desc = d.meta.desc || "";
+      group = `${proj.meta.label} — ${d.meta.group}`;
+      num = "◆";
+      body = d.body;
+      navKey = "projects/" + id + "/" + slug;
+      if (d.meta.sourceLang !== (VI ? "vi" : "en"))
+        extra = `<div class="callout"><span class="ck">${VI ? "GHI CHÚ" : "NOTE"}</span><p>${T.langFallback}.</p></div>`;
+    }
 
     /* chrome */
-    const title = doc.meta.title || "Documentation";
-    numEl.textContent = id === "index" ? "00" : String(PAGES.indexOf(id) + 1).padStart(2, "0");
-    groupEl.textContent = T.groupAlias(doc.meta.group || "Reference");
+    numEl.textContent = num;
+    groupEl.textContent = group;
     titleEl.textContent = title;
-    descEl.textContent = doc.meta.desc || "";
-    descEl.style.display = doc.meta.desc ? "" : "none";
+    descEl.textContent = desc;
+    descEl.style.display = desc ? "" : "none";
     if (crumbEl) crumbEl.textContent = title;
     document.title = T.pageTitle(title);
-    $$("[data-nav]").forEach(a => a.classList.toggle("on", a.dataset.nav === id));
-    if (id !== page) history.replaceState(null, "", "#/" + id);
+    $$("[data-nav]").forEach(a => a.classList.toggle("on", a.dataset.nav === navKey));
+    if (navKey !== page) history.replaceState(null, "", "#/" + navKey);
 
     /* content swap with a soft rise */
     prose.classList.remove("swap"); void prose.offsetWidth; prose.classList.add("swap");
-    prose.innerHTML = renderMarkdown(doc.body) + (id === "index" ? cardHtml() : "");
+    prose.innerHTML = (body ? renderMarkdown(body) : "") + extra;
     assignHeadingIds(prose);
     rewriteLegacyLinks(prose);
+    if (kind === "project-doc") rewriteProjectLinks(prose, id);
 
     /* right rail TOC — "On this page" (scroll-spy) */
     const heads = $$("h2[id]", prose);
     tocIO?.disconnect(); tocIO = null;
     if (tocBox) {
       if (heads.length) {
-        tocBox.innerHTML = `<span class="mono-sm">${T.toc}</span>` + heads.map(h => `<a href="#/${id}#${h.id}" data-toc="${h.id}">${h.textContent}</a>`).join("");
+        tocBox.innerHTML = `<span class="mono-sm">${T.toc}</span>` + heads.map(h => `<a href="#/${navKey}#${h.id}" data-toc="${h.id}">${h.textContent}</a>`).join("");
         tocBox.style.display = "";
         tocIO = new IntersectionObserver(en => {
           for (const e of en) if (e.isIntersecting) $$("a", tocBox).forEach(a => a.classList.toggle("on", a.dataset.toc === e.target.id));
@@ -201,12 +434,25 @@
     }
 
     /* prev / next pager */
-    const cur = PAGES.indexOf(id);
-    const prev = PAGES[cur - 1], next = PAGES[cur + 1];
-    pagerBox.innerHTML = id === "index"
-      ? `<a class="pager" href="#/${PAGES[0]}"><span class="mono-sm">→ ${T.next}</span><span class="pl">${pages.get(PAGES[0])?.meta.title || PAGES[0]}</span></a><span></span>`
-      : `${prev ? `<a class="pager" href="#/${prev}"><span class="mono-sm">← ${T.prev}</span><span class="pl">${pages.get(prev)?.meta.title || prev}</span></a>` : "<span></span>"}
-         ${next ? `<a class="pager next" href="#/${next}"><span class="mono-sm">${T.next} →</span><span class="pl">${pages.get(next)?.meta.title || next}</span></a>` : "<span></span>"}`;
+    if (kind === "page") {
+      const cur = PAGES.indexOf(id);
+      const prev = PAGES[cur - 1], next = PAGES[cur + 1];
+      pagerBox.innerHTML = id === "index"
+        ? `<a class="pager" href="#/${PAGES[0]}"><span class="mono-sm">→ ${T.next}</span><span class="pl">${pages.get(PAGES[0])?.meta.title || PAGES[0]}</span></a><span></span>`
+        : `${prev ? `<a class="pager" href="#/${prev}"><span class="mono-sm">← ${T.prev}</span><span class="pl">${pages.get(prev)?.meta.title || prev}</span></a>` : "<span></span>"}
+           ${next ? `<a class="pager next" href="#/${next}"><span class="mono-sm">${T.next} →</span><span class="pl">${pages.get(next)?.meta.title || next}</span></a>` : "<span></span>"}`;
+    } else if (kind === "project-doc") {
+      const slugs = [...proj.docs.keys()];
+      const cur = slugs.indexOf(slug);
+      const prev = slugs[cur - 1], next = slugs[cur + 1];
+      const prevDoc = prev ? proj.docs.get(prev) : null;
+      const nextDoc = next ? proj.docs.get(next) : null;
+      pagerBox.innerHTML =
+        `${prevDoc ? `<a class="pager" href="#/projects/${id}/${prev}"><span class="mono-sm">← ${T.prev}</span><span class="pl">${prevDoc.meta.title}</span></a>` : `<a class="pager" href="#/projects/${id}"><span class="mono-sm">← ${T.prev}</span><span class="pl">${proj.meta.label}</span></a>`}
+         ${nextDoc ? `<a class="pager next" href="#/projects/${id}/${next}"><span class="mono-sm">${T.next} →</span><span class="pl">${nextDoc.meta.title}</span></a>` : `<a class="pager next" href="#/projects/${id}"><span class="mono-sm">${T.next} →</span><span class="pl">${proj.meta.label}</span></a>`}`;
+    } else {
+      pagerBox.innerHTML = `<a class="pager" href="#/getting-started"><span class="mono-sm">← ${T.prev}</span><span class="pl">${pages.get("getting-started")?.meta.title || "Getting started"}</span></a><span></span>`;
+    }
 
     /* scroll */
     if (anchor && document.getElementById(anchor)) requestAnimationFrame(() => jumpTo(anchor));
@@ -225,7 +471,8 @@
   let currentKey = "";
   const onHashChange = () => {
     const { page, anchor } = route();
-    const id = pages.has(page) ? page : "index";
+    const r = resolve(page);
+    const id = r.kind === "page" ? r.id : (r.kind === "project" ? "projects/" + r.id : "projects/" + r.id + "/" + r.slug);
     const key = id + "#" + anchor;
     const curPage = currentKey.split("#")[0];
     if (key === currentKey) return;
@@ -237,11 +484,14 @@
       $$(".rail-nav a, .docnav a").forEach(a => a.classList.toggle("on", a.dataset.nav === id));
       return;
     }
+    /* a project opened from the sidebar expands its doc list — rebuild the chrome */
+    buildSidebar();
+    buildRailNav();
     renderCurrent();
     patchLangLinks();
   };
 
-  loadAll().then(() => {
+  Promise.all([loadAll(), loadProjects()]).then(() => {
     if (!pages.size) {
       $(".prose", article).innerHTML =
         `<div class="callout"><span class="ck">${VI ? "LỖI TẢI" : "LOAD ERROR"}</span>` +
@@ -295,7 +545,7 @@
     VI = toVi;
     T = mkT(VI);
     document.documentElement.lang = VI ? "vi" : "en";
-    await loadAll();             /* refetch the whole set in the target language */
+    await Promise.all([loadAll(), loadProjects()]);   /* refetch docs + project docs */
     buildSidebar();
     buildRailNav();
     syncSiteLabels();
@@ -318,7 +568,19 @@
     if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
     const tag = (e.target.tagName || "").toLowerCase();
     if (tag === "input" || tag === "textarea" || e.target.isContentEditable) return;
-    const cur = PAGES.indexOf(route().page);
+    const r = resolve(route().page);
+    if (r.kind === "project-doc") {
+      /* inside a project the pager walks that project's own pages */
+      const pr = projects.get(r.id);
+      if (!pr) return;
+      const slugs = [...pr.docs.keys()];
+      const cur = slugs.indexOf(r.slug);
+      if (e.key === "[" && cur > 0) location.hash = `#/projects/${r.id}/${slugs[cur - 1]}`;
+      else if (e.key === "]" && cur < slugs.length - 1) location.hash = `#/projects/${r.id}/${slugs[cur + 1]}`;
+      return;
+    }
+    if (r.kind !== "page") return;
+    const cur = PAGES.indexOf(r.id);
     if (cur === -1) return;
     if (e.key === "[" && cur > 0) location.hash = "#/" + PAGES[cur - 1];
     else if (e.key === "]" && cur < PAGES.length - 1) location.hash = "#/" + PAGES[cur + 1];

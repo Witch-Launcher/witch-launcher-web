@@ -1,0 +1,71 @@
+{
+  "id": "metalbridge",
+  "project": "MetalBridge",
+  "repository": "https://github.com/Witch-Launcher/MetalMacOSPortiOS",
+  "branch": "main",
+  "section": "Projects",
+  "lang": "vi",
+  "groups": [
+    "Inventory",
+    "Coverage",
+    "Shader",
+    "Verification",
+    "Legal"
+  ],
+  "docs": [
+    {
+      "slug": "api-inventory",
+      "group": "Inventory",
+      "file": "API_INVENTORY.md",
+      "source": "API_INVENTORY.md",
+      "sourceLang": "en",
+      "title": "Metal API Inventory",
+      "desc": "This is the Phase 1 inventory for MetalBridge. It compares the public Metal API surface in the macOS 26.2 SDK with the iOS 26.2 SDK using Xcode 26.3."
+    },
+    {
+      "slug": "coverage",
+      "group": "Coverage",
+      "file": "COVERAGE.md",
+      "source": "COVERAGE.md",
+      "sourceLang": "en",
+      "title": "Coverage Report",
+      "desc": "This report describes what MetalBridge implements, what it converts, what is only partially equivalent, and what cannot be provided on iOS. The runtime source of truth is Sources/MetalBridgeKit/Inventory/CompatibilityMan"
+    },
+    {
+      "slug": "compat-shader",
+      "group": "Shader",
+      "file": "COMPAT_SHADER.md",
+      "source": "COMPAT_SHADER.md",
+      "sourceLang": "en",
+      "title": "Shader Compatibility Contract",
+      "desc": "This document defines the Metal Shading Language subset that MetalBridgeKit guarantees on the Apple A9 baseline (iOS GPU family 3), and how to bring shaders written against Metal 2, 3, or 4 into that subset. The enforcem"
+    },
+    {
+      "slug": "verification",
+      "group": "Verification",
+      "file": "VERIFICATION.md",
+      "source": "VERIFICATION.md",
+      "sourceLang": "en",
+      "title": "Verification Record",
+      "desc": "- Date: 2026-10-22 (extended 2026-10-28) - Xcode: 26.3 (17C529) - iOS SDK: 26.2 - macOS SDK used for inventory: 26.2 - Deployment target: iOS 12.0 (app), iOS 13.0 (test bundle) - Architecture: arm64 - XcodeGen: 2.46.0"
+    },
+    {
+      "slug": "privacy",
+      "group": "Legal",
+      "file": "privacy.md",
+      "source": "privacy.md",
+      "sourceLang": "en",
+      "title": "MetalBridge — Privacy Policy",
+      "desc": "MetalBridge is a from-scratch Swift iOS compatibility layer for public Metal APIs declared on macOS but not available on native iOS Metal. It targets Apple A9 and newer."
+    },
+    {
+      "slug": "terms",
+      "group": "Legal",
+      "file": "terms.md",
+      "source": "terms.md",
+      "sourceLang": "en",
+      "title": "MetalBridge — Terms of Service",
+      "desc": "By using MetalBridge you agree to these terms."
+    }
+  ]
+}
