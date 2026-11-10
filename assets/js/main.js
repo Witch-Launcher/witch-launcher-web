@@ -105,10 +105,27 @@
       if (e.deltaMode === 1) d *= 34; else if (e.deltaMode === 2) d *= innerHeight;
       return d;
     };
+    /* a nested scroller under the cursor wins when it can still scroll that
+       way — otherwise the rail, the docs sidebar and the page TOC would be
+       unreachable with the mouse wheel */
+    const canScroll = (el, dir) => {
+      if (!el || !(el instanceof Element)) return false;
+      const oy = getComputedStyle(el).overflowY;
+      if (oy === "visible" || oy === "hidden") return false;
+      if (el.scrollHeight - el.clientHeight <= 1) return false;
+      if (dir < 0) return el.scrollTop > 0;
+      return el.scrollTop + el.clientHeight < el.scrollHeight - 1;
+    };
     addEventListener("wheel", e => {
       if (e.ctrlKey || e.metaKey) return; /* pinch zoom */
+      const d = norm(e);
+      let node = e.target instanceof Element ? e.target : null;
+      while (node && node !== document.body && node !== document.documentElement) {
+        if (canScroll(node, d)) return;   /* let the browser scroll it */
+        node = node.parentElement;
+      }
       e.preventDefault();
-      tgt = Math.min(limit(), Math.max(0, tgt + norm(e))); kick();
+      tgt = Math.min(limit(), Math.max(0, tgt + d)); kick();
     }, { passive: false });
     addEventListener("keydown", e => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
