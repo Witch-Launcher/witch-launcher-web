@@ -13,7 +13,7 @@ Minecraft: Java Edition không thể khởi động thiếu biên dịch just-in
 - **SideStore / AltStore** — attach VPN debug vào Witch để tiến trình <kbd>CS_DEBUGGED</kbd> sống khỏe, hoặc chạy qua **StikDebug**.
 - **StikDebug** — giữ nó attach vào Witch trong suốt phiên.
 - **TrollStore** — bật tùy chọn **URL Scheme** trong TrollStore nếu Witch cứ chờ.
-- **StikJIT tích hợp (iOS 17.4+)** — cung cấp tệp pairing trong Cài đặt → Game → JIT và kết nối LocalDevVPN. Chi tiết trong [hướng dẫn JIT](#/jit).
+- **StikJIT tích hợp (iOS 17.4+)** — cung cấp tệp pairing trong Cài đặt → Game → JIT và kết nối LocalDevVPN. Chi tiết trong [hướng dẫn JIT](#/projects/launcher/jit).
 - **Jailbroken** — bật JIT enabler của jail và chọn phương pháp khớp trong Cài đặt.
 
 Các bản cập nhật hệ thống có thể làm hỏng một thiết lập chạy tốt ngày hôm qua — rà lại kết nối debugger, VPN và TrollStore URL Scheme trước khi đổ lỗi cho ứng dụng.

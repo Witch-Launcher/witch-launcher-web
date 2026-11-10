@@ -25,6 +25,7 @@ assets/
   js/marked.min.js    Vendored Markdown parser (marked v12, MIT)
   js/docs-runtime.js  Markdown → DOM runtime: routing (#/<page>[#anchor]),
                       sidebar/rail/TOC/pager built from the md files themselves,
+                      project docs fetched live from GitHub,
                       callout support (> [!NOTE|TIP|IMPORTANT|WARNING])
   js/main.js          Theme wipe (View Transitions), loader, reveals, parallax,
                       GitHub releases fetch + fallback
@@ -56,8 +57,9 @@ Everything else is derived at runtime — no index files:
   order pages are listed in `docs-runtime.js` (`PAGES`).
 - **In-page TOC, breadcrumb, prev/next pager, docs title/cards** — derived
   from the rendered headings and each md's `title`/`desc`.
-- **Routing** — `#/jit`, `#/jit#built-in-jit`. `hashchange` swaps the article in
-  place (chrome persists, no reload, no loader replay). `[` / `]` switch pages.
+- **Routing** — `#/changelog` for the site's own pages, `#/projects/tglmt/api`
+  for a project page. `hashchange` swaps the article in place (chrome persists,
+  no reload, no loader replay). `[` / `]` switch pages.
 - **"On this page"** — a scroll-spy TOC of the current page's headings lives on
   the right rail on desktop and as a bordered card on top of the article on
   mobile, exactly like doc-site conventions.
@@ -65,6 +67,39 @@ Everything else is derived at runtime — no index files:
   survive renames; without it a slug is derived from the heading text.
 - **Callouts** — `> [!NOTE] …` in Markdown renders as a `.callout` block.
 - **Editing docs** — edit `docs-md/{en,vi}/<page>.md`. Both languages mirror.
+
+## Project docs
+
+The launcher's own guides, and the documentation of every companion project,
+are **not** copied into this repository. Each project publishes its own
+`docs/DOCS_MANIFEST.json`:
+
+```json
+{
+  "project": "TGLMT",
+  "repository": "https://github.com/Witch-Launcher/TGLMT",
+  "branch": "main",
+  "languages": ["en", "vi"],
+  "bases": { "en": "en/", "vi": "vi/" },
+  "order": [
+    { "group": "Overview", "file": "getting-started.md" },
+    { "group": "API", "file": "api.md" }
+  ]
+}
+```
+
+The runtime reads that manifest from GitHub and then fetches each page, so a
+push to a project repository updates its section of this site with **no change
+to this repository at all**. `bases` maps a language to its folder, and the
+runtime falls back to the default language for pages a project has not
+translated yet (those pages carry a note saying the original is English).
+
+Two public mirrors of the same GitHub content are tried in order —
+`raw.githubusercontent.com` and the jsDelivr GitHub CDN — so a hiccup on one
+does not take the whole section down.
+
+To add a project, add it to `PROJECTS` in `docs-runtime.js` and publish a
+`docs/DOCS_MANIFEST.json` in that repository.
 
 ## Notes
 

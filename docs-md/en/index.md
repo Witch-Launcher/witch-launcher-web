@@ -5,12 +5,12 @@ desc: "Everything about running Minecraft: Java Edition on iPhone and iPad — f
 ---
 
 ## Where to next {#next}
-New to the launcher? Start with [Getting started](#/getting-started), then keep the [FAQ](#/faq) open in a tab for launch week. Project news, screenshots and downloads live on the [main site](../index.html).
+New to the launcher? Start with [Getting started](#/projects/launcher/getting-started), then keep the [FAQ](#/faq) open in a tab for launch week. Project news, screenshots and downloads live on the [main site](../index.html).
 
 ## The projects behind the launcher {#projects}
 The launcher is only the shell. The rendering stack, the compatibility layers and the plugin runtime all live in their own repositories, and each one publishes its own documentation.
 
-Every project below is read straight from its repository — the page order comes from the `docs/DOCS_MANIFEST.json` that the repository ships, so a push updates these pages without touching this site. A mirrored copy is kept here as a fallback for when the network is unavailable.
+Every project below is read straight from its repository — the page order comes from the `docs/DOCS_MANIFEST.json` that the repository ships, so a push updates these pages without touching this site.
 
 | Project | What it is | Licence |
 | --- | --- | --- |

@@ -709,6 +709,8 @@
   .docnav .sub-grp { margin: 14px 0 4px 10px; padding-left: 10px; border-left: 1px solid var(--line); }
   .docnav .sub-grp > .mono-sm { display: block; color: var(--faint); font-size: 9px; margin-bottom: 4px; letter-spacing: .18em; }
   .docnav .sub-grp a { font-size: 13.5px; padding: 5px 8px; }
+  .docnav a.off { color: var(--faint); pointer-events: none; }
+  .docnav a.off .n { color: var(--line-strong); }
   .rail-sep { display: block; width: 14px; height: 1px; background: var(--line-strong); margin: 6px auto; }
 
   /* TOC always visible — like "On this page" */

@@ -6,13 +6,13 @@ desc: "Mọi thứ về việc chạy Minecraft: Java Edition trên iPhone và i
 
 ## Đi tiếp ở đâu {#next}
 
-Mới dùng launcher? Hãy bắt đầu với [Bắt đầu](#/getting-started), rồi mở [FAQ](#/faq) trong một tab suốt tuần ra mắt. Tin tức dự án, ảnh chụp màn hình và bản tải về nằm trên [trang chính](../index.html).
+Mới dùng launcher? Hãy bắt đầu với [Bắt đầu](#/projects/launcher/getting-started), rồi mở [FAQ](#/faq) trong một tab suốt tuần ra mắt. Tin tức dự án, ảnh chụp màn hình và bản tải về nằm trên [trang chính](../index.html).
 
 ## Các dự án đứng sau launcher {#projects}
 
 Launcher chỉ là lớp vỏ. Toàn bộ stack kết xuất, các lớp tương thích và runtime plugin đều nằm ở những kho riêng, và mỗi kho đều có bộ tài liệu riêng.
 
-Mỗi dự án bên dưới được đọc thẳng từ kho của nó — thứ tự trang do chính `docs/DOCS_MANIFEST.json` trong kho quyết định, nên chỉ cần push là trang cập nhật ngay mà không cần sửa website. Một bản sao được giữ lại ở đây để dự phòng khi mất mạng.
+Mỗi dự án bên dưới được đọc thẳng từ kho của nó — thứ tự trang do chính `docs/DOCS_MANIFEST.json` trong kho quyết định, nên chỉ cần push là trang cập nhật ngay mà không cần sửa website.
 
 | Dự án | Là gì | Giấy phép |
 | --- | --- | --- |

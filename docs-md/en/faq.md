@@ -11,7 +11,7 @@ Minecraft: Java Edition cannot start without just-in-time compilation, and the b
 - **SideStore / AltStore** — attach the debugging VPN to Witch so the <kbd>CS_DEBUGGED</kbd> process stays alive, or launch via **StikDebug**.
 - **StikDebug** — keep it attached to Witch for the whole session.
 - **TrollStore** — enable the **URL Scheme** option in TrollStore if Witch keeps waiting.
-- **Built-in StikJIT (iOS 17.4+)** — provide the pairing file in Settings → Game → JIT and connect LocalDevVPN. Details in the [JIT guide](#/jit).
+- **Built-in StikJIT (iOS 17.4+)** — provide the pairing file in Settings → Game → JIT and connect LocalDevVPN. Details in the [JIT guide](#/projects/launcher/jit).
 - **Jailbroken** — turn on your jail’s JIT enabler and pick the matching method in Settings.
 
 System updates can break a setup that worked yesterday — re-check the debugger connection, the VPN and the TrollStore URL Scheme before assuming the app is at fault.
