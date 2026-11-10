@@ -12,13 +12,13 @@
         pageTitle: t => `${t} — Tài liệu Witch Launcher`,
         notFound: "Không tìm thấy trang — quay về tổng quan.",
         callout: { NOTE: "GHI CHÚ", TIP: "MẸO", IMPORTANT: "QUAN TRỌNG", WARNING: "CẢNH BÁO" },
-        groupAlias: g => ({ Overview: "TỔNG QUAN", Plugins: "PLUGIN", Reference: "THAM KHẢO" }[g] || String(g).toUpperCase()) }
+        groupAlias: g => ({ Overview: "TỔNG QUAN", Plugins: "PLUGIN", Reference: "THAM KHẢO", Legal: "PHÁP LÝ" }[g] || String(g).toUpperCase()) }
     : { home: "Overview", docs: "DOCS", toc: "On this page", eyebrow: "DOCS",
         prev: "Previous", next: "Next", kbd: "Press [ ] to switch pages",
         pageTitle: t => `${t} — Witch Launcher Docs`,
         notFound: "Page not found — back to the overview.",
         callout: { NOTE: "NOTE", TIP: "TIP", IMPORTANT: "IMPORTANT", WARNING: "WARNING" },
-        groupAlias: g => ({ Overview: "OVERVIEW", Plugins: "PLUGIN", Reference: "REFERENCE" }[g] || String(g).toUpperCase()) };
+        groupAlias: g => ({ Overview: "OVERVIEW", Plugins: "PLUGIN", Reference: "REFERENCE", Legal: "LEGAL" }[g] || String(g).toUpperCase()) };
   let VI = document.documentElement.lang === "vi";
   let T = mkT(VI);
   /* site root path ("/" in production, handles subpath deploys too) — derived from
@@ -27,9 +27,9 @@
   const scriptEl = document.currentScript || Array.from(document.scripts).find(s => /docs-runtime\.js($|\?)/.test(s.src || ""));
   const siteRoot = scriptEl ? new URL("../../", scriptEl.src).pathname : "/";
 
-  const PAGES = ["getting-started", "jit", "runtimes", "plugins", "plugins-dev", "changelog", "faq", "credits"];
+  const PAGES = ["getting-started", "jit", "runtimes", "plugins", "plugins-dev", "changelog", "faq", "credits", "privacy", "terms"];
   const ALL = ["index", ...PAGES];
-  const NAV = { "getting-started": "START", jit: "JIT", runtimes: "RUNTIMES", plugins: "PLUGINS", "plugins-dev": "PDEV", changelog: "LOG", faq: "FAQ", credits: "CREDITS" };
+  const NAV = { "getting-started": "START", jit: "JIT", runtimes: "RUNTIMES", plugins: "PLUGINS", "plugins-dev": "PDEV", changelog: "LOG", faq: "FAQ", credits: "CREDITS", privacy: "PRIVACY", terms: "TERMS" };
   const mdBase = (vi) => siteRoot + "docs-md/" + (vi ? "vi/" : "en/");
 
   /* ————————————— data ————————————— */
