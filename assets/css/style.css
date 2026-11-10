@@ -98,6 +98,7 @@
     background: color-mix(in srgb, var(--bg) 78%, transparent);
     -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
     transition: border-color var(--t-theme) var(--e-io), background-color var(--t-theme) var(--e-io);
+    overflow-y: auto; overscroll-behavior: contain;
   }
   .rail-top { display: grid; place-items: center; padding: 20px 0; }
   .rail-top a {
@@ -630,8 +631,8 @@
   .docnav a.on::before { content: "◆"; font-size: 7px; align-self: center; color: var(--fg); }
   .docnav a .n { font-family: var(--font-mono); font-size: 9.5px; color: var(--faint); letter-spacing: .08em; }
 
-  .article { max-width: 1060px; margin-inline: auto; padding: clamp(90px, 12vh, 130px) var(--gutter) 120px; display: grid; grid-template-columns: minmax(0, 1fr) 216px; gap: clamp(40px, 5vw, 80px); }
-  .article-body { max-width: 72ch; min-width: 0; }
+  .article { max-width: 1060px; margin-inline: auto; padding: clamp(90px, 12vh, 130px) var(--gutter) 120px; display: grid; grid-template-columns: minmax(0, 1fr) 216px; gap: clamp(24px, 4vw, 48px); }
+  .article-body { max-width: 100ch; min-width: 0; }
   .doc-head { margin-bottom: clamp(40px, 6vh, 64px); border-bottom: 1px solid var(--line); padding-bottom: 30px; }
   .doc-head h1 { font-size: clamp(40px, 5vw, 64px); letter-spacing: -.035em; margin-top: 14px; }
   .doc-head p { color: var(--dim); margin-top: 14px; font-size: 17px; max-width: 56ch; }
