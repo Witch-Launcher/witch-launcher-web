@@ -210,8 +210,8 @@
     const y = scrollY;
     const down = y > lastY + 4, up = y < lastY - 4;
     const docsbar = $(".docsbar");
-    if (down && y > 140) { bar?.classList.add("hide"); docsbar?.classList.add("hide-xs"); }
-    else if (up) { bar?.classList.remove("hide"); docsbar?.classList.remove("hide-xs"); }
+    if (down && y > 140) { bar?.classList.add("hide"); docsbar?.classList.add("hide-xs"); document.documentElement.classList.add("docsbar-hidden"); }
+    else if (up) { bar?.classList.remove("hide"); docsbar?.classList.remove("hide-xs"); document.documentElement.classList.remove("docsbar-hidden"); }
     lastY = y;
     const max = document.documentElement.scrollHeight - innerHeight;
     if (max > 0) {

@@ -613,15 +613,19 @@
     position: fixed; top: 58px; bottom: 0; left: var(--rail-w); width: var(--sidew); z-index: 40;
     border-right: 1px solid var(--line); padding: 26px 18px 40px; overflow-y: auto; overscroll-behavior: contain;
     scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent;
-    transition: transform .55s var(--e-out), border-color var(--t-theme) var(--e-io);
+    transition: transform .55s var(--e-out), border-color var(--t-theme) var(--e-io), top .45s var(--e-out);
   }
+  /* when the top bar retracts on scroll-down the sidebar slides up to fill the
+     gap — the nav is never left with a cut-off strip above it */
+  html.docsbar-hidden .sidebar { top: 0; }
   .sidebar::-webkit-scrollbar { width: 8px; height: 8px; }
   .sidebar::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 8px; }
   .sidebar::-webkit-scrollbar-track { background: transparent; }
   @media (min-width: 1024px) {
     .page.has-left { margin-left: calc(var(--rail-w) + var(--sidew)); transition: margin-left .55s var(--e-out); }
     html.sb-collapsed .page.has-left { margin-left: var(--rail-w); }
-    html.sb-collapsed .sidebar { transform: translateX(-110%); box-shadow: none; }
+    /* slide fully off-screen — no sliver left under the brand rail */
+    html.sb-collapsed .sidebar { transform: translateX(calc(-100% - var(--rail-w))); box-shadow: none; }
   }
   .docnav .grp { margin-bottom: 28px; }
   .docnav .grp > .mono-sm { display: block; color: var(--faint); margin-bottom: 10px; }
@@ -631,8 +635,12 @@
   .docnav a.on::before { content: "◆"; font-size: 7px; align-self: center; color: var(--fg); }
   .docnav a .n { font-family: var(--font-mono); font-size: 9.5px; color: var(--faint); letter-spacing: .08em; }
 
-  .article { max-width: 1060px; margin-inline: auto; padding: clamp(90px, 12vh, 130px) var(--gutter) 120px; display: grid; grid-template-columns: minmax(0, 1fr) 216px; gap: clamp(24px, 4vw, 48px); }
-  .article-body { max-width: 100ch; min-width: 0; }
+  .article { max-width: 1440px; margin-inline: auto; padding: clamp(90px, 12vh, 130px) var(--gutter) 120px; display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: clamp(28px, 3.5vw, 56px); }
+  .article-body { max-width: none; min-width: 0; }
+  /* prose keeps a readable measure; tables, code and callouts use the full
+     column so wide screens carry data instead of empty space */
+  .prose > p, .prose > ul, .prose > ol { max-width: 84ch; }
+  .prose table, .prose pre, .prose .callout { max-width: none; }
   .doc-head { margin-bottom: clamp(40px, 6vh, 64px); border-bottom: 1px solid var(--line); padding-bottom: 30px; }
   .doc-head h1 { font-size: clamp(40px, 5vw, 64px); letter-spacing: -.035em; margin-top: 14px; }
   .doc-head p { color: var(--dim); margin-top: 14px; font-size: 17px; max-width: 56ch; }
@@ -645,7 +653,7 @@
   /* prose */
   .prose h2 { font-size: clamp(26px, 2.6vw, 34px); margin: 62px 0 18px; letter-spacing: -.03em; scroll-margin-top: 100px; }
   .prose h3 { font-size: 19px; margin: 40px 0 12px; letter-spacing: -.02em; scroll-margin-top: 100px; }
-  .prose p, .prose li { color: var(--dim); font-size: 15.5px; }
+  .prose p, .prose li { color: var(--dim); font-size: 16px; }
   .prose p strong, .prose li strong { color: var(--fg); }
   .prose p { margin-bottom: 16px; }
   .prose ul, .prose ol { margin: 0 0 18px 2px; display: grid; gap: 8px; }
